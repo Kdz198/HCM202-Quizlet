@@ -1,0 +1,8 @@
+{
+  "name": "hcm202-quizlet",
+  "version": "1.0.0",
+  "description": "HCM202 Quizlet Web Application",
+  "dependencies": {
+    "redis": "^4.6.14"
+  }
+}
