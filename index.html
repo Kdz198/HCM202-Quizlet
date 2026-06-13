@@ -491,6 +491,46 @@
       .learn-stats { gap: 8px; }
       .learn-stat strong { font-size: 1.2rem; }
     }
+
+    .active-users-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      box-shadow: var(--shadow);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--correct);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .pulse-dot::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: var(--correct);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite ease-in-out;
+      opacity: 0.6;
+      top: 0;
+      left: 0;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.8); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -501,6 +541,10 @@
         <span id="headerSub">Chế độ học — kiểu Quizlet</span>
       </div>
       <div class="header-actions">
+        <div class="active-users-badge" id="activeUsersBadge" title="Số người đang ôn tập trực tuyến">
+          <span class="pulse-dot"></span>
+          <span id="activeUsersCount">1</span> đang học
+        </div>
         <button type="button" class="btn-ghost btn-theme" id="btnTheme" title="Đổi giao diện sáng/tối" aria-label="Dark mode">
           <span class="theme-icon-moon">🌙</span>
           <span class="theme-icon-sun">☀️</span>
@@ -1359,6 +1403,31 @@
     if (typeof HCM_QUESTIONS !== "undefined") {
       $("totalCount").textContent = HCM_QUESTIONS.length;
     }
+
+    // Active users tracking (Vercel KV API)
+    let sessionId = sessionStorage.getItem("hcm-session-id");
+    if (!sessionId) {
+      sessionId = "user_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+      sessionStorage.setItem("hcm-session-id", sessionId);
+    }
+
+    async function pingActiveStatus() {
+      try {
+        const res = await fetch(`/api/active?sessionId=${sessionId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data.activeUsers !== "undefined") {
+            $("activeUsersCount").textContent = data.activeUsers;
+          }
+        }
+      } catch (err) {
+        console.warn("Lỗi đồng bộ số người online:", err);
+      }
+    }
+
+    // Ping immediately and then every 20 seconds
+    pingActiveStatus();
+    setInterval(pingActiveStatus, 20000);
   </script>
 </body>
 </html>
