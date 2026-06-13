@@ -10,16 +10,19 @@ export default async function handler(req, res) {
 
   const { sessionId } = req.query;
 
+  const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
   // If no KV credentials, return a mock or offline status
-  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+  if (!kvUrl || !kvToken) {
     return res.status(200).json({
       activeUsers: 1,
-      error: "Vercel KV is not connected. Please connect Vercel KV in your project storage settings."
+      error: "Vercel KV or Upstash is not connected. Please connect Vercel KV or Upstash in your project storage settings."
     });
   }
 
   const headers = {
-    Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}`
+    Authorization: `Bearer ${kvToken}`
   };
 
   try {
@@ -27,14 +30,14 @@ export default async function handler(req, res) {
     if (sessionId) {
       const cleanSessionId = encodeURIComponent(sessionId);
       await fetch(
-        `${process.env.KV_REST_API_URL}/set/hcm_active_${cleanSessionId}/1/EX/45`,
+        `${kvUrl}/set/hcm_active_${cleanSessionId}/1/EX/45`,
         { headers }
       );
     }
 
     // 2. Retrieve all active user keys
     const keysResponse = await fetch(
-      `${process.env.KV_REST_API_URL}/keys/hcm_active_*`,
+      `${kvUrl}/keys/hcm_active_*`,
       { headers }
     );
     const keysData = await keysResponse.json();
