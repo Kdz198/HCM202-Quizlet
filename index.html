@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Học Tư tưởng Hồ Chí Minh — Quizlet</title>
+  <title>Học Tư tưởng Hồ Chí Minh — Quizlet Style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
@@ -98,6 +98,38 @@
 
     .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
 
+    /* Mode Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--muted);
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab:hover {
+      color: var(--primary);
+      background: var(--option-hover);
+    }
+
+    .tab.active {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    /* Stats for Practice Mode */
     .progress-wrap {
       margin-bottom: 24px;
     }
@@ -144,6 +176,47 @@
     .stat strong { display: block; font-size: 1.4rem; color: var(--primary); }
     .stat small { color: var(--muted); font-size: 0.75rem; }
 
+    /* Learn Mode Status Board */
+    .learn-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .learn-stat {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: var(--shadow);
+      background: var(--card);
+    }
+
+    .learn-stat.remaining {
+      border-bottom: 4px solid var(--muted);
+      color: var(--text);
+    }
+
+    .learn-stat.familiar {
+      border-bottom: 4px solid #ffaa3b;
+      color: #ffaa3b;
+    }
+
+    .learn-stat.mastered {
+      border-bottom: 4px solid var(--correct);
+      color: var(--correct);
+    }
+
+    .learn-stat strong {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 2px;
+      color: var(--text);
+    }
+
+    /* Cards */
     .card {
       background: var(--card);
       border-radius: var(--radius);
@@ -152,14 +225,33 @@
       margin-bottom: 16px;
     }
 
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
     .question-label {
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--primary);
-      margin-bottom: 12px;
     }
+
+    .learn-status-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .badge-remaining { background: var(--border); color: var(--muted); }
+    .badge-familiar { background: #ffeccf; color: #b25e00; }
+    [data-theme="dark"] .badge-familiar { background: #3d2c12; color: #ffaa3b; }
+    .badge-mastered { background: var(--correct-bg); color: var(--correct-text); }
 
     .question-text {
       font-size: 1.15rem;
@@ -319,7 +411,7 @@
     .btn-next:hover { background: var(--primary-dark); }
     .btn-next.show { display: block; }
 
-    /* Start / Finish screens */
+    /* Start / Finish / Summary screens */
     .screen {
       text-align: center;
       padding: 48px 24px;
@@ -349,9 +441,23 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
+      transition: background 0.15s;
     }
 
     .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-danger-ghost {
+      margin-top: 12px;
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: var(--wrong);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
 
     .settings {
       display: flex;
@@ -382,6 +488,8 @@
     @media (max-width: 480px) {
       .question-text { font-size: 1.05rem; }
       .card { padding: 20px 16px; }
+      .learn-stats { gap: 8px; }
+      .learn-stat strong { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -390,7 +498,7 @@
     <header>
       <div class="logo">
         Tư tưởng HCM
-        <span>Chế độ học — kiểu Quizlet</span>
+        <span id="headerSub">Chế độ học — kiểu Quizlet</span>
       </div>
       <div class="header-actions">
         <button type="button" class="btn-ghost btn-theme" id="btnTheme" title="Đổi giao diện sáng/tối" aria-label="Dark mode">
@@ -402,58 +510,157 @@
       </div>
     </header>
 
-    <div id="startScreen" class="card screen">
-      <h1>Ôn tập Tư tưởng Hồ Chí Minh</h1>
-      <p><strong id="totalCount">0</strong> câu trắc nghiệm từ tài liệu. Chọn đáp án đúng — đúng thì tự chuyển câu tiếp, sai thì xem đáp án rồi bấm tiếp tục.</p>
-      <div class="settings">
-        <label><input type="checkbox" id="chkShuffleQ" checked /> Trộn thứ tự câu hỏi</label>
-        <label><input type="checkbox" id="chkShuffleO" checked /> Trộn thứ tự đáp án</label>
-      </div>
-      <button type="button" class="btn-primary" id="btnStart">Bắt đầu học</button>
+    <!-- Tab Bar -->
+    <div class="tabs">
+      <button type="button" class="tab active" id="tabPractice">📝 Luyện đề</button>
+      <button type="button" class="tab" id="tabLearn">🧠 Học nhanh (Quizlet)</button>
     </div>
 
-    <div id="quizArea" class="hidden">
-      <div class="progress-wrap">
-        <div class="progress-meta">
-          <span id="progressLabel">Câu 1 / 384</span>
-          <span id="scoreLabel">Đúng: 0</span>
+    <!-- ================= PRACTICE MODE AREA ================= -->
+    <div id="practiceModeArea">
+      <div id="startScreen" class="card screen">
+        <h1>Ôn tập Tư tưởng Hồ Chí Minh</h1>
+        <p><strong id="totalCount">0</strong> câu trắc nghiệm từ tài liệu. Chọn đáp án đúng — đúng thì tự chuyển câu tiếp, sai thì xem đáp án rồi bấm tiếp tục.</p>
+        <div class="settings">
+          <label><input type="checkbox" id="chkShuffleQ" checked /> Trộn thứ tự câu hỏi</label>
+          <label><input type="checkbox" id="chkShuffleO" checked /> Trộn thứ tự đáp án</label>
         </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <button type="button" class="btn-primary" id="btnStart">Bắt đầu học</button>
       </div>
 
-      <div class="stats">
-        <div class="stat"><strong id="statCorrect">0</strong><small>Đúng</small></div>
-        <div class="stat"><strong id="statWrong">0</strong><small>Sai</small></div>
-        <div class="stat"><strong id="statStreak">0</strong><small>Chuỗi đúng</small></div>
+      <div id="quizArea" class="hidden">
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span id="progressLabel">Câu 1 / 379</span>
+            <span id="scoreLabel">Đúng: 0</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><strong id="statCorrect">0</strong><small>Đúng</small></div>
+          <div class="stat"><strong id="statWrong">0</strong><small>Sai</small></div>
+          <div class="stat"><strong id="statStreak">0</strong><small>Chuỗi đúng</small></div>
+        </div>
+
+        <div class="nav-arrows">
+          <button type="button" class="btn-nav" id="btnPrev" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            Câu trước
+          </button>
+          <button type="button" class="btn-nav" id="btnNextQ" disabled>
+            Câu sau
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="question-header">
+            <div class="question-label" id="qNum">Câu 1</div>
+          </div>
+          <p class="question-text" id="qText"></p>
+        </div>
+
+        <div class="options" id="options"></div>
+
+        <div class="feedback" id="feedback"></div>
+        <button type="button" class="btn-next" id="btnNext">Tiếp tục →</button>
       </div>
 
-      <div class="nav-arrows">
-        <button type="button" class="btn-nav" id="btnPrev" disabled>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-          Câu trước
-        </button>
-        <button type="button" class="btn-nav" id="btnNextQ" disabled>
-          Câu sau
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-        </button>
+      <div id="finishScreen" class="card screen hidden">
+        <h1>Hoàn thành!</h1>
+        <div class="finish-score" id="finishPercent">0%</div>
+        <p id="finishSummary"></p>
+        <button type="button" class="btn-primary" id="btnAgain">Học lại từ đầu</button>
       </div>
-
-      <div class="card">
-        <div class="question-label" id="qNum">Câu 1</div>
-        <p class="question-text" id="qText"></p>
-      </div>
-
-      <div class="options" id="options"></div>
-
-      <div class="feedback" id="feedback"></div>
-      <button type="button" class="btn-next" id="btnNext">Tiếp tục →</button>
     </div>
 
-    <div id="finishScreen" class="card screen hidden">
-      <h1>Hoàn thành!</h1>
-      <div class="finish-score" id="finishPercent">0%</div>
-      <p id="finishSummary"></p>
-      <button type="button" class="btn-primary" id="btnAgain">Học lại từ đầu</button>
+    <!-- ================= LEARN MODE AREA ================= -->
+    <div id="learnModeArea" class="hidden">
+      <!-- Status Dashboard -->
+      <div class="learn-stats">
+        <div class="learn-stat remaining">
+          <strong id="learnStatRemaining">0</strong>
+          Chưa học
+        </div>
+        <div class="learn-stat familiar">
+          <strong id="learnStatFamiliar">0</strong>
+          Đang học
+        </div>
+        <div class="learn-stat mastered">
+          <strong id="learnStatMastered">0</strong>
+          Đã thuộc
+        </div>
+      </div>
+
+      <!-- Learn Start Screen -->
+      <div id="learnStartScreen" class="card screen">
+        <h1>Chế độ Học nhanh thông minh</h1>
+        <p>Hệ thống tự động chia nhỏ câu hỏi thành **vòng 10 câu**. Bạn cần trả lời đúng **2 lần** để "Thuộc" hẳn một câu. Trả lời sai câu nào sẽ phải trả lời lại câu đó ở cuối vòng cho đến khi đúng.</p>
+        <div id="learnProgressBox" style="margin-bottom: 20px; font-weight: 600;"></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+          <button type="button" class="btn-primary" id="btnStartLearn">Bắt đầu học vòng tiếp theo</button>
+          <button type="button" class="btn-danger-ghost" id="btnResetLearnProgress">Xóa tiến trình & Học lại từ đầu</button>
+        </div>
+      </div>
+
+      <!-- Learn Active Screen -->
+      <div id="learnActiveScreen" class="hidden">
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span id="learnProgressLabel">Câu 1 / 10 trong vòng</span>
+            <span id="learnStreakLabel">Đang tiến hành</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="learnProgressFill"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="question-header">
+            <div class="question-label" id="learnQNum">Vòng 1 - Câu 1</div>
+            <div class="learn-status-badge badge-remaining" id="learnQBadge">Chưa học</div>
+          </div>
+          <p class="question-text" id="learnQText"></p>
+        </div>
+
+        <div class="options" id="learnOptions"></div>
+
+        <div class="feedback" id="learnFeedback"></div>
+        <button type="button" class="btn-next" id="btnLearnNext">Tiếp tục →</button>
+      </div>
+
+      <!-- Learn Round Summary Screen -->
+      <div id="learnRoundSummaryScreen" class="card screen hidden">
+        <h1>Vòng học hoàn thành!</h1>
+        <div class="finish-score" id="learnRoundSummaryTitle">10 / 10 câu</div>
+        <p id="learnRoundSummaryText">Bạn đã hoàn thành vòng học này. Các câu trả lời sai đã được sửa lại thành công!</p>
+        
+        <div style="margin: 24px auto; max-width: 320px; text-align: left; border-top: 1px solid var(--border); padding-top: 16px;">
+          <h3 style="font-size: 1rem; margin-bottom: 12px; text-align: center;">Tiến trình tổng quát:</h3>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px;">
+            <span>Đã thuộc (Mastered):</span>
+            <strong id="summaryMasteredCount">0/379</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px;">
+            <span>Đang học (Familiar):</span>
+            <strong id="summaryFamiliarCount">0/379</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 16px;">
+            <span>Chưa học (Remaining):</span>
+            <strong id="summaryRemainingCount">0/379</strong>
+          </div>
+          <div class="progress-bar" style="height: 12px;"><div class="progress-fill" id="learnTotalProgressFill" style="width: 0%;"></div></div>
+        </div>
+
+        <button type="button" class="btn-primary" id="btnContinueNextRound">Học tiếp vòng tiếp theo →</button>
+      </div>
+
+      <!-- Final Mastery Screen -->
+      <div id="learnFinalMasteryScreen" class="card screen hidden">
+        <div style="font-size: 4rem; margin-bottom: 16px;">🏆</div>
+        <h1>Tuyệt vời! Bạn đã thuộc toàn bộ!</h1>
+        <p>Tất cả <strong>379</strong> câu hỏi đều đã đạt trạng thái <strong>Đã thuộc (Mastered)</strong>. Bạn đã sẵn sàng để thi đạt điểm tối đa môn Tư tưởng Hồ Chí Minh!</p>
+        <button type="button" class="btn-primary" id="btnResetLearnFinal">Học lại từ đầu (Reset)</button>
+      </div>
     </div>
   </div>
 
@@ -461,7 +668,13 @@
   <script>
     const AUTO_NEXT_MS = 900;
     const THEME_KEY = "hcm-quiz-theme";
+    const LEARN_STATE_KEY = "hcm-quiz-learn-states-v1";
 
+    let activeTab = "practice"; // "practice" or "learn"
+
+    // -------------------------------------------------------------
+    // PRACTICE MODE VARIABLES
+    // -------------------------------------------------------------
     let deck = [];
     let index = 0;
     let maxReached = 0;
@@ -472,8 +685,23 @@
     let responses = [];
     let autoNextTimer = null;
 
+    // -------------------------------------------------------------
+    // LEARN MODE VARIABLES (QUIZLET STYLE)
+    // -------------------------------------------------------------
+    // learnStates will map: questionIndex -> state (0 = unseen/remaining, 1 = familiar, 2 = mastered)
+    let learnStates = {};
+    let currentRoundIndices = []; // The indices of the 10 questions chosen for this round
+    let currentRoundQueue = [];   // Queue of indexes currently remaining in the round (replenishes wrong answers at the back)
+    let currentRoundOriginalStates = {}; // Stores states at the start of the round to see progression
+    let currentRoundResults = {}; // Stores correct/wrong counts within the current round
+    let learnIndex = 0;           // Current index in currentRoundQueue
+    let learnAnswered = false;
+
     const $ = (id) => document.getElementById(id);
 
+    // -------------------------------------------------------------
+    // UTILS & COMMON LOGIC
+    // -------------------------------------------------------------
     function setTheme(theme) {
       document.documentElement.setAttribute("data-theme", theme);
       localStorage.setItem(THEME_KEY, theme);
@@ -492,6 +720,61 @@
       setTheme(next);
     });
 
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // -------------------------------------------------------------
+    // TAB NAVIGATION
+    // -------------------------------------------------------------
+    $("tabPractice").addEventListener("click", () => {
+      switchTab("practice");
+    });
+
+    $("tabLearn").addEventListener("click", () => {
+      switchTab("learn");
+    });
+
+    function switchTab(tab) {
+      activeTab = tab;
+      if (tab === "practice") {
+        $("tabPractice").classList.add("active");
+        $("tabLearn").classList.remove("active");
+        $("practiceModeArea").classList.remove("hidden");
+        $("learnModeArea").classList.add("hidden");
+        $("headerSub").textContent = "Chế độ luyện đề đầy đủ";
+        
+        // Hide shuffle/restart header buttons in Learn mode, show in Practice
+        $("btnShuffle").style.visibility = "visible";
+        $("btnRestart").style.visibility = "visible";
+      } else {
+        $("tabPractice").classList.remove("active");
+        $("tabLearn").classList.add("active");
+        $("practiceModeArea").classList.add("hidden");
+        $("learnModeArea").classList.remove("hidden");
+        $("headerSub").textContent = "Chế độ học nhanh thông minh";
+        
+        $("btnShuffle").style.visibility = "hidden";
+        $("btnRestart").style.visibility = "hidden";
+        
+        initLearnMode();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // PRACTICE MODE LOGIC
+    // -------------------------------------------------------------
     function clearAutoNext() {
       if (autoNextTimer) {
         clearTimeout(autoNextTimer);
@@ -502,15 +785,6 @@
     function updateNavButtons() {
       $("btnPrev").disabled = index <= 0;
       $("btnNextQ").disabled = index >= maxReached;
-    }
-
-    function shuffle(arr) {
-      const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
     }
 
     function buildDeck() {
@@ -573,7 +847,7 @@
       } else {
         fb.classList.add("err");
         const rightText = item.options.find((o) => o.id === item.correct)?.text || "";
-        fb.textContent = `✗ Sai rồi. Đáp án đúng: ${item.correct}. ${rightText}`;
+        fb.textContent = `✗ Sai rồi. Đáp án đúng là ${item.correct}. ${rightText}`;
         $("btnNext").classList.add("show");
       }
     }
@@ -649,12 +923,6 @@
       showQuestion();
     }
 
-    function escapeHtml(s) {
-      const d = document.createElement("div");
-      d.textContent = s;
-      return d.innerHTML;
-    }
-
     function pickAnswer(btn, item) {
       if (answered) return;
       answered = true;
@@ -718,14 +986,16 @@
         showFinish();
       }
     });
+
     $("btnRestart").addEventListener("click", () => {
-      if (deck.length) {
+      if (activeTab === "practice" && deck.length) {
         buildDeck();
         showQuestion();
       }
     });
+
     $("btnShuffle").addEventListener("click", () => {
-      if (deck.length) {
+      if (activeTab === "practice" && deck.length) {
         deck = shuffle(deck);
         index = 0;
         maxReached = 0;
@@ -739,6 +1009,353 @@
       }
     });
 
+
+    // -------------------------------------------------------------
+    // LEARN MODE CORE LOGIC (QUIZLET)
+    // -------------------------------------------------------------
+    function loadLearnProgress() {
+      const saved = localStorage.getItem(LEARN_STATE_KEY);
+      if (saved) {
+        try {
+          learnStates = JSON.parse(saved);
+        } catch (e) {
+          learnStates = {};
+        }
+      } else {
+        learnStates = {};
+      }
+      
+      // Sync list
+      const totalCount = typeof HCM_QUESTIONS !== "undefined" ? HCM_QUESTIONS.length : 0;
+      for (let i = 0; i < totalCount; i++) {
+        if (learnStates[i] === undefined) {
+          learnStates[i] = 0;
+        }
+      }
+    }
+
+    function saveLearnProgress() {
+      localStorage.setItem(LEARN_STATE_KEY, JSON.stringify(learnStates));
+    }
+
+    function getLearnMetrics() {
+      let r = 0; // Remaining (state 0)
+      let f = 0; // Familiar (state 1)
+      let m = 0; // Mastered (state 2)
+      
+      const total = typeof HCM_QUESTIONS !== "undefined" ? HCM_QUESTIONS.length : 0;
+      for (let i = 0; i < total; i++) {
+        const s = learnStates[i] || 0;
+        if (s === 0) r++;
+        else if (s === 1) f++;
+        else if (s === 2) m++;
+      }
+      return { remaining: r, familiar: f, mastered: m, total: total };
+    }
+
+    function updateLearnDashboard() {
+      const metrics = getLearnMetrics();
+      $("learnStatRemaining").textContent = metrics.remaining;
+      $("learnStatFamiliar").textContent = metrics.familiar;
+      $("learnStatMastered").textContent = metrics.mastered;
+
+      if (metrics.mastered === metrics.total && metrics.total > 0) {
+        showLearnFinalScreen();
+      } else {
+        $("learnProgressBox").innerHTML = `
+          Tiến trình: Đã thuộc <span style="color:var(--correct);font-weight:bold">${metrics.mastered}</span> / ${metrics.total} câu 
+          (${metrics.total ? Math.round((metrics.mastered/metrics.total)*100) : 0}%)
+        `;
+      }
+    }
+
+    function initLearnMode() {
+      loadLearnProgress();
+      updateLearnDashboard();
+      
+      // Toggle visibility
+      $("learnStartScreen").classList.remove("hidden");
+      $("learnActiveScreen").classList.add("hidden");
+      $("learnRoundSummaryScreen").classList.add("hidden");
+      $("learnFinalMasteryScreen").classList.add("hidden");
+    }
+
+    // Generate next round of 10 questions
+    function startNewLearnRound() {
+      const metrics = getLearnMetrics();
+      if (metrics.mastered === metrics.total) {
+        showLearnFinalScreen();
+        return;
+      }
+
+      // Pick question indices for the round (10 questions)
+      let unseen = [];
+      let familiar = [];
+      const total = typeof HCM_QUESTIONS !== "undefined" ? HCM_QUESTIONS.length : 0;
+      
+      for (let i = 0; i < total; i++) {
+        const s = learnStates[i] || 0;
+        if (s === 0) unseen.push(i);
+        else if (s === 1) familiar.push(i);
+      }
+
+      // We prioritize familiar questions first to turn them into Mastered.
+      // Fill the rest of the 10 spots with unseen questions.
+      let chosen = [];
+      
+      // Take up to 10 familiar questions
+      let famCount = Math.min(familiar.length, 10);
+      // Shuffle familiar subset before taking them to keep it dynamic
+      let famShuffled = shuffle(familiar);
+      for (let i = 0; i < famCount; i++) {
+        chosen.push(famShuffled[i]);
+      }
+
+      // Fill remaining spots from unseen questions
+      if (chosen.length < 10 && unseen.length > 0) {
+        let unsCount = Math.min(unseen.length, 10 - chosen.length);
+        // Take the first unsCount from unseen
+        for (let i = 0; i < unsCount; i++) {
+          chosen.push(unseen[i]);
+        }
+      }
+
+      // If we still don't have questions (e.g. all are mastered, which is handled), just exit.
+      if (chosen.length === 0) {
+        showLearnFinalScreen();
+        return;
+      }
+
+      // Setup active round
+      currentRoundIndices = shuffle(chosen); // Shuffle the round of 10
+      currentRoundQueue = [...currentRoundIndices]; // Copy to working queue
+      
+      // Record starting states for this round so we can summarize progress
+      currentRoundOriginalStates = {};
+      currentRoundIndices.forEach(idx => {
+        currentRoundOriginalStates[idx] = learnStates[idx] || 0;
+      });
+
+      // Clear round results
+      currentRoundResults = {
+        totalAnswers: 0,
+        correctOnFirstTry: 0
+      };
+
+      learnIndex = 0;
+      learnAnswered = false;
+
+      // Show the active screen
+      $("learnStartScreen").classList.add("hidden");
+      $("learnActiveScreen").classList.remove("hidden");
+      $("learnRoundSummaryScreen").classList.add("hidden");
+      $("learnFinalMasteryScreen").classList.add("hidden");
+
+      showLearnQuestion();
+    }
+
+    function showLearnQuestion() {
+      learnAnswered = false;
+      $("learnFeedback").className = "feedback";
+      $("learnFeedback").textContent = "";
+      $("btnLearnNext").classList.remove("show");
+
+      if (currentRoundQueue.length === 0 || learnIndex >= currentRoundQueue.length) {
+        // Round is complete when queue is empty!
+        showLearnRoundSummary();
+        return;
+      }
+
+      const qIndex = currentRoundQueue[learnIndex];
+      const item = HCM_QUESTIONS[qIndex];
+      
+      // Update progress bar within the round
+      // Progress calculation: we need to show how many questions are done.
+      // Total unique in round is currentRoundIndices.length (usually 10).
+      // We calculate how many of these unique indices are fully cleared (i.e. not in the remaining queue).
+      const clearedUnique = currentRoundIndices.filter(idx => !currentRoundQueue.slice(learnIndex).includes(idx)).length;
+      const progressPercent = (clearedUnique / currentRoundIndices.length) * 100;
+      
+      $("learnProgressLabel").textContent = `Đã thuộc: ${clearedUnique} / ${currentRoundIndices.length} câu trong vòng`;
+      $("learnStreakLabel").textContent = `Hàng đợi: ${currentRoundQueue.length - learnIndex} câu`;
+      $("learnProgressFill").style.width = `${progressPercent}%`;
+
+      // Update badge and title
+      $("learnQNum").textContent = `Câu ôn tập #${qIndex + 1}`;
+      const state = learnStates[qIndex] || 0;
+      const badge = $("learnQBadge");
+      if (state === 0) {
+        badge.textContent = "Chưa học";
+        badge.className = "learn-status-badge badge-remaining";
+      } else if (state === 1) {
+        badge.textContent = "Đang học (✓)";
+        badge.className = "learn-status-badge badge-familiar";
+      } else {
+        badge.textContent = "Đã thuộc (✓✓)";
+        badge.className = "learn-status-badge badge-mastered";
+      }
+
+      $("learnQText").textContent = item.q;
+
+      // Generate options (shuffled)
+      let opts = shuffle(item.options);
+      const container = $("learnOptions");
+      container.innerHTML = "";
+
+      opts.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option";
+        btn.dataset.id = opt.id;
+        btn.innerHTML = `
+          <span class="option-letter">${opt.id}</span>
+          <span class="option-text">${escapeHtml(opt.text)}</span>
+        `;
+        btn.addEventListener("click", () => pickLearnAnswer(btn, qIndex, item));
+        container.appendChild(btn);
+      });
+    }
+
+    function pickLearnAnswer(btn, qIndex, item) {
+      if (learnAnswered) return;
+      learnAnswered = true;
+
+      const chosen = btn.dataset.id;
+      const isRight = chosen === item.correct;
+      const previousState = learnStates[qIndex] || 0;
+
+      // Apply UI changes to option buttons
+      const buttons = $("learnOptions").querySelectorAll(".option");
+      buttons.forEach(b => {
+        b.disabled = true;
+        const id = b.dataset.id;
+        if (id === item.correct) b.classList.add("correct");
+        else if (id === chosen && !isRight) b.classList.add("wrong");
+        else b.classList.add("dimmed");
+      });
+
+      const fb = $("learnFeedback");
+      fb.className = "feedback show";
+
+      if (isRight) {
+        fb.classList.add("ok");
+        if (previousState === 0) {
+          learnStates[qIndex] = 1; // Unseen -> Familiar
+          fb.innerHTML = `✓ Chính xác! Câu này đã chuyển sang trạng thái <strong>Đang học (Familiar)</strong>.`;
+        } else if (previousState === 1) {
+          learnStates[qIndex] = 2; // Familiar -> Mastered
+          fb.innerHTML = `✓ Tuyệt vời! Bạn đã trả lời đúng lần 2. Câu này đã <strong>Đã thuộc (Mastered)</strong>!`;
+        }
+        
+        saveLearnProgress();
+        updateLearnDashboard();
+
+        // If answered correctly, we remove it from the remaining queue
+        // (Just advance learnIndex, it won't be appended back)
+        
+        // Auto next on success
+        autoNextTimer = setTimeout(() => {
+          autoNextTimer = null;
+          learnIndex++;
+          showLearnQuestion();
+        }, AUTO_NEXT_MS);
+      } else {
+        fb.classList.add("err");
+        const rightText = item.options.find(o => o.id === item.correct)?.text || "";
+        fb.innerHTML = `✗ Chưa chính xác. Đáp án đúng là ${item.correct}. ${rightText}<br/>
+                        <span style="font-weight: normal; font-size: 0.85rem; opacity: 0.9;">
+                          Câu này đã được đưa về trạng thái <strong>Chưa học</strong> và sẽ xuất hiện lại ở cuối vòng.
+                        </span>`;
+        
+        // Demote progress
+        learnStates[qIndex] = 0; // Reset to unseen
+        saveLearnProgress();
+        updateLearnDashboard();
+
+        // Push the question index back to the end of the queue so they have to try again!
+        currentRoundQueue.push(qIndex);
+
+        // Show Next button because user needs to review the mistake
+        $("btnLearnNext").classList.add("show");
+      }
+    }
+
+    $("btnLearnNext").addEventListener("click", () => {
+      clearAutoNext();
+      learnIndex++;
+      showLearnQuestion();
+    });
+
+    function showLearnRoundSummary() {
+      $("learnActiveScreen").classList.add("hidden");
+      $("learnRoundSummaryScreen").classList.remove("hidden");
+
+      // Calculate progress in this round
+      let masteredInRound = 0;
+      let familiarInRound = 0;
+
+      currentRoundIndices.forEach(idx => {
+        const startState = currentRoundOriginalStates[idx];
+        const endState = learnStates[idx] || 0;
+        if (endState === 2 && startState < 2) {
+          masteredInRound++;
+        }
+        if (endState === 1 && startState === 0) {
+          familiarInRound++;
+        }
+      });
+
+      // Render summary details
+      $("learnRoundSummaryTitle").textContent = `Đã qua vòng ${currentRoundIndices.length} câu!`;
+      let progressText = `Bạn đã ôn tập xong nhóm 10 câu này. `;
+      if (masteredInRound > 0 || familiarInRound > 0) {
+        progressText += `Trong vòng này, bạn đã nâng hạng thành công <strong style="color:var(--correct)">${masteredInRound} câu lên Đã thuộc</strong> và <strong style="color:#ffaa3b">${familiarInRound} câu lên Đang học</strong>!`;
+      } else {
+        progressText += `Hãy tiếp tục nỗ lực để đạt trạng thái "Đã thuộc" ở các vòng tiếp theo!`;
+      }
+      $("learnRoundSummaryText").innerHTML = progressText;
+
+      // General Stats
+      const metrics = getLearnMetrics();
+      $("summaryMasteredCount").textContent = `${metrics.mastered} / ${metrics.total}`;
+      $("summaryFamiliarCount").textContent = `${metrics.familiar} / ${metrics.total}`;
+      $("summaryRemainingCount").textContent = `${metrics.remaining} / ${metrics.total}`;
+      
+      const overallPct = metrics.total ? (metrics.mastered / metrics.total) * 100 : 0;
+      $("learnTotalProgressFill").style.width = `${overallPct}%`;
+    }
+
+    $("btnContinueNextRound").addEventListener("click", () => {
+      startNewLearnRound();
+    });
+
+    $("btnStartLearn").addEventListener("click", () => {
+      startNewLearnRound();
+    });
+
+    function showLearnFinalScreen() {
+      $("learnStartScreen").classList.add("hidden");
+      $("learnActiveScreen").classList.add("hidden");
+      $("learnRoundSummaryScreen").classList.add("hidden");
+      $("learnFinalMasteryScreen").classList.remove("hidden");
+    }
+
+    function resetLearnProgress() {
+      if (confirm("Bạn có chắc chắn muốn xóa toàn bộ tiến trình học nhanh này để học lại từ đầu không?")) {
+        learnStates = {};
+        const total = typeof HCM_QUESTIONS !== "undefined" ? HCM_QUESTIONS.length : 0;
+        for (let i = 0; i < total; i++) {
+          learnStates[i] = 0;
+        }
+        saveLearnProgress();
+        initLearnMode();
+      }
+    }
+
+    $("btnResetLearnProgress").addEventListener("click", resetLearnProgress);
+    $("btnResetLearnFinal").addEventListener("click", resetLearnProgress);
+
+    // Initial load
     if (typeof HCM_QUESTIONS !== "undefined") {
       $("totalCount").textContent = HCM_QUESTIONS.length;
     }
