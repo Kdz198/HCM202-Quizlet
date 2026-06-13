@@ -64,6 +64,36 @@
       padding: 20px 16px 40px;
     }
 
+    .app-container.chat-collapsed {
+      grid-template-columns: 1fr;
+      max-width: 720px;
+    }
+
+    .app-container.chat-collapsed .app-sidebar {
+      display: none;
+    }
+
+    .app-container.chat-collapsed .btn-chat-toggle {
+      display: flex !important;
+    }
+
+    .btn-close-chat {
+      display: block !important;
+      float: right;
+      border: none;
+      background: none;
+      font-size: 1.4rem;
+      font-weight: bold;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.15s;
+    }
+
+    .btn-close-chat:hover {
+      color: var(--wrong);
+    }
+
     .app-main {
       min-width: 0;
     }
@@ -232,9 +262,6 @@
       }
       .btn-chat-toggle {
         display: flex;
-      }
-      .btn-close-chat {
-        display: block !important;
       }
     }
 
@@ -889,7 +916,7 @@
   <div class="app-sidebar" id="appSidebar">
     <div class="card chat-panel">
       <div class="chat-header">
-        <button type="button" class="btn-close-chat" id="btnCloseChat" style="display:none; float: right; border:none; background:none; font-size:1.2rem; cursor:pointer; color:var(--muted);">&times;</button>
+        <button type="button" class="btn-close-chat" id="btnCloseChat" title="Thu nhỏ kênh chat">&times;</button>
         <h3>💬 Kênh Chat Thế Giới</h3>
         <span class="chat-subtitle">100 tin nhắn gần nhất</span>
       </div>
@@ -1635,12 +1662,34 @@
     const appSidebar = $("appSidebar");
     const btnCloseChat = $("btnCloseChat");
     const chatInputName = $("chatInputName");
+    const appContainer = document.querySelector(".app-container");
+
+    // Load collapsed preference
+    const isCollapsed = localStorage.getItem("hcm-chat-collapsed") === "true";
+    if (isCollapsed) {
+      appContainer.classList.add("chat-collapsed");
+    }
 
     btnChatToggle.addEventListener("click", () => {
-      appSidebar.classList.toggle("show");
+      if (window.innerWidth <= 850) {
+        appSidebar.classList.add("show");
+      } else {
+        appContainer.classList.remove("chat-collapsed");
+        localStorage.setItem("hcm-chat-collapsed", "false");
+        // Scroll chat to bottom when expanding
+        setTimeout(() => {
+          $("chatMessages").scrollTop = $("chatMessages").scrollHeight;
+        }, 50);
+      }
     });
+
     btnCloseChat.addEventListener("click", () => {
-      appSidebar.classList.remove("show");
+      if (window.innerWidth <= 850) {
+        appSidebar.classList.remove("show");
+      } else {
+        appContainer.classList.add("chat-collapsed");
+        localStorage.setItem("hcm-chat-collapsed", "true");
+      }
     });
 
     // Save and load nickname
