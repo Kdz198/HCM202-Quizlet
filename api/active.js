@@ -10,8 +10,26 @@ export default async function handler(req, res) {
 
   const { sessionId } = req.query;
 
-  const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  let kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  let kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  // Try to parse from REDIS_URL or KV_URL if REST variables are not provided
+  if (!kvUrl || !kvToken) {
+    const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
+    if (redisUrl) {
+      try {
+        const parsed = new URL(redisUrl);
+        const host = parsed.hostname;
+        const password = parsed.password || parsed.username;
+        if (host && password) {
+          kvUrl = `https://${host}`;
+          kvToken = password;
+        }
+      } catch (e) {
+        console.error("Failed to parse REDIS_URL:", e);
+      }
+    }
+  }
 
   // If no KV credentials, return a mock or offline status
   if (!kvUrl || !kvToken) {
