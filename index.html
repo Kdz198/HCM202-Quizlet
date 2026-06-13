@@ -246,7 +246,6 @@
         grid-template-columns: 1fr;
       }
       .app-sidebar {
-        display: none;
         position: fixed;
         top: 0;
         right: 0;
@@ -256,12 +255,16 @@
         z-index: 1001;
         box-shadow: -4px 0 24px rgba(0,0,0,0.15);
         background: var(--bg);
-      }
-      .app-sidebar.show {
         display: block;
       }
+      .app-container.chat-collapsed .app-sidebar {
+        display: none !important;
+      }
       .btn-chat-toggle {
-        display: flex;
+        display: flex !important;
+      }
+      .app-container:not(.chat-collapsed) .btn-chat-toggle {
+        display: none !important;
       }
     }
 
@@ -1663,31 +1666,30 @@
     const appContainer = document.querySelector(".app-container");
 
     // Load collapsed preference
-    const isCollapsed = localStorage.getItem("hcm-chat-collapsed") === "true";
-    if (isCollapsed) {
+    let isCollapsed = localStorage.getItem("hcm-chat-collapsed");
+    if (isCollapsed === null) {
+      // Default to collapsed on mobile/tablet (<= 850px) if no preference exists
+      isCollapsed = (window.innerWidth <= 850) ? "true" : "false";
+    }
+
+    if (isCollapsed === "true") {
       appContainer.classList.add("chat-collapsed");
+    } else {
+      appContainer.classList.remove("chat-collapsed");
     }
 
     btnChatToggle.addEventListener("click", () => {
-      if (window.innerWidth <= 850) {
-        appSidebar.classList.add("show");
-      } else {
-        appContainer.classList.remove("chat-collapsed");
-        localStorage.setItem("hcm-chat-collapsed", "false");
-        // Scroll chat to bottom when expanding
-        setTimeout(() => {
-          $("chatMessages").scrollTop = $("chatMessages").scrollHeight;
-        }, 50);
-      }
+      appContainer.classList.remove("chat-collapsed");
+      localStorage.setItem("hcm-chat-collapsed", "false");
+      // Scroll chat to bottom when expanding
+      setTimeout(() => {
+        $("chatMessages").scrollTop = $("chatMessages").scrollHeight;
+      }, 50);
     });
 
     btnCloseChat.addEventListener("click", () => {
-      if (window.innerWidth <= 850) {
-        appSidebar.classList.remove("show");
-      } else {
-        appContainer.classList.add("chat-collapsed");
-        localStorage.setItem("hcm-chat-collapsed", "true");
-      }
+      appContainer.classList.add("chat-collapsed");
+      localStorage.setItem("hcm-chat-collapsed", "true");
     });
 
     // Save and load nickname
