@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Học Tư tưởng Hồ Chí Minh — Quizlet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1a1a2e;
+      --muted: #5c5c7a;
+      --primary: #4255ff;
+      --primary-dark: #3244e0;
+      --correct: #23b26b;
+      --correct-bg: #e8f8ef;
+      --correct-text: #157a47;
+      --wrong: #e5383b;
+      --wrong-bg: #fdecec;
+      --wrong-text: #b91c1c;
+      --border: #e2e4ef;
+      --option-hover: #f8f9ff;
+      --shadow: 0 4px 24px rgba(66, 85, 255, 0.08);
+      --radius: 16px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f0f14;
+      --card: #1a1a24;
+      --text: #ececf4;
+      --muted: #9494ad;
+      --primary: #6b7aff;
+      --primary-dark: #5566ee;
+      --correct: #2dd484;
+      --correct-bg: #143528;
+      --correct-text: #5ee09a;
+      --wrong: #ff6b6e;
+      --wrong-bg: #3a1a1c;
+      --wrong-text: #ff9a9c;
+      --border: #2c2c3d;
+      --option-hover: #222233;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .logo span { color: var(--muted); font-weight: 400; font-size: 0.85rem; display: block; }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+    .progress-wrap {
+      margin-bottom: 24px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #7b8cff);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+      width: 0%;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      flex: 1;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat strong { display: block; font-size: 1.4rem; color: var(--primary); }
+    .stat small { color: var(--muted); font-size: 0.75rem; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+
+    .question-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .question-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      width: 100%;
+      text-align: left;
+      padding: 16px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    }
+
+    .option:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: var(--option-hover);
+    }
+
+    .option:disabled { cursor: default; }
+
+    .option-letter {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    .option.correct {
+      border-color: var(--correct);
+      background: var(--correct-bg);
+    }
+
+    .option.correct .option-letter {
+      background: var(--correct);
+      color: #fff;
+    }
+
+    .option.wrong {
+      border-color: var(--wrong);
+      background: var(--wrong-bg);
+    }
+
+    .option.wrong .option-letter {
+      background: var(--wrong);
+      color: #fff;
+    }
+
+    .option.dimmed {
+      opacity: 0.45;
+    }
+
+    .feedback {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.ok { background: var(--correct-bg); color: var(--correct-text); }
+    .feedback.err { background: var(--wrong-bg); color: var(--wrong-text); }
+
+    .nav-arrows {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: var(--card);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-nav svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .btn-theme {
+      padding: 8px 12px;
+      min-width: 44px;
+    }
+
+    .btn-theme .theme-icon-sun,
+    [data-theme="dark"] .btn-theme .theme-icon-moon { display: none; }
+
+    [data-theme="dark"] .btn-theme .theme-icon-sun { display: inline; }
+    .btn-theme .theme-icon-moon { display: inline; }
+
+    .btn-next {
+      display: none;
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-next:hover { background: var(--primary-dark); }
+    .btn-next.show { display: block; }
+
+    /* Start / Finish screens */
+    .screen {
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .screen h1 {
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .screen p {
+      color: var(--muted);
+      margin-bottom: 28px;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .settings {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 320px;
+      margin: 0 auto 24px;
+      text-align: left;
+    }
+
+    .settings label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .finish-score {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 16px 0;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 480px) {
+      .question-text { font-size: 1.05rem; }
+      .card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">
+        Tư tưởng HCM
+        <span>Chế độ học — kiểu Quizlet</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn-ghost btn-theme" id="btnTheme" title="Đổi giao diện sáng/tối" aria-label="Dark mode">
+          <span class="theme-icon-moon">🌙</span>
+          <span class="theme-icon-sun">☀️</span>
+        </button>
+        <button type="button" class="btn-ghost" id="btnShuffle">🔀 Trộn câu</button>
+        <button type="button" class="btn-ghost" id="btnRestart">↺ Làm lại</button>
+      </div>
+    </header>
+
+    <div id="startScreen" class="card screen">
+      <h1>Ôn tập Tư tưởng Hồ Chí Minh</h1>
+      <p><strong id="totalCount">0</strong> câu trắc nghiệm từ tài liệu. Chọn đáp án đúng — đúng thì tự chuyển câu tiếp, sai thì xem đáp án rồi bấm tiếp tục.</p>
+      <div class="settings">
+        <label><input type="checkbox" id="chkShuffleQ" checked /> Trộn thứ tự câu hỏi</label>
+        <label><input type="checkbox" id="chkShuffleO" checked /> Trộn thứ tự đáp án</label>
+      </div>
+      <button type="button" class="btn-primary" id="btnStart">Bắt đầu học</button>
+    </div>
+
+    <div id="quizArea" class="hidden">
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="progressLabel">Câu 1 / 384</span>
+          <span id="scoreLabel">Đúng: 0</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong id="statCorrect">0</strong><small>Đúng</small></div>
+        <div class="stat"><strong id="statWrong">0</strong><small>Sai</small></div>
+        <div class="stat"><strong id="statStreak">0</strong><small>Chuỗi đúng</small></div>
+      </div>
+
+      <div class="nav-arrows">
+        <button type="button" class="btn-nav" id="btnPrev" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          Câu trước
+        </button>
+        <button type="button" class="btn-nav" id="btnNextQ" disabled>
+          Câu sau
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="question-label" id="qNum">Câu 1</div>
+        <p class="question-text" id="qText"></p>
+      </div>
+
+      <div class="options" id="options"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <button type="button" class="btn-next" id="btnNext">Tiếp tục →</button>
+    </div>
+
+    <div id="finishScreen" class="card screen hidden">
+      <h1>Hoàn thành!</h1>
+      <div class="finish-score" id="finishPercent">0%</div>
+      <p id="finishSummary"></p>
+      <button type="button" class="btn-primary" id="btnAgain">Học lại từ đầu</button>
+    </div>
+  </div>
+
+  <script src="hcm_data.js"></script>
+  <script>
+    const AUTO_NEXT_MS = 900;
+    const THEME_KEY = "hcm-quiz-theme";
+
+    let deck = [];
+    let index = 0;
+    let maxReached = 0;
+    let correct = 0;
+    let wrong = 0;
+    let streak = 0;
+    let answered = false;
+    let responses = [];
+    let autoNextTimer = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(saved || (prefersDark ? "dark" : "light"));
+    }
+
+    initTheme();
+
+    $("btnTheme").addEventListener("click", () => {
+      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      setTheme(next);
+    });
+
+    function clearAutoNext() {
+      if (autoNextTimer) {
+        clearTimeout(autoNextTimer);
+        autoNextTimer = null;
+      }
+    }
+
+    function updateNavButtons() {
+      $("btnPrev").disabled = index <= 0;
+      $("btnNextQ").disabled = index >= maxReached;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildDeck() {
+      const qs = typeof HCM_QUESTIONS !== "undefined" ? HCM_QUESTIONS : [];
+      $("totalCount").textContent = qs.length;
+      let list = [...qs];
+      if ($("chkShuffleQ").checked) list = shuffle(list);
+      deck = list.map((item) => {
+        let opts = [...item.options];
+        if ($("chkShuffleO").checked) opts = shuffle(opts);
+        return { ...item, options: opts };
+      });
+      index = 0;
+      maxReached = 0;
+      correct = 0;
+      wrong = 0;
+      streak = 0;
+      answered = false;
+      responses = new Array(deck.length).fill(null);
+      clearAutoNext();
+      updateStats();
+      updateNavButtons();
+    }
+
+    function recalcStats() {
+      correct = 0;
+      wrong = 0;
+      streak = 0;
+      let run = 0;
+      for (let i = 0; i <= maxReached; i++) {
+        const r = responses[i];
+        if (!r) continue;
+        if (r.isRight) {
+          correct++;
+          run++;
+          streak = Math.max(streak, run);
+        } else {
+          wrong++;
+          run = 0;
+        }
+      }
+      updateStats();
+    }
+
+    function applyAnswerUI(item, chosen, isRight) {
+      const buttons = $("options").querySelectorAll(".option");
+      buttons.forEach((b) => {
+        b.disabled = true;
+        const id = b.dataset.id;
+        if (id === item.correct) b.classList.add("correct");
+        else if (id === chosen && !isRight) b.classList.add("wrong");
+        else b.classList.add("dimmed");
+      });
+
+      const fb = $("feedback");
+      fb.className = "feedback show";
+      if (isRight) {
+        fb.classList.add("ok");
+        fb.textContent = "✓ Chính xác!";
+      } else {
+        fb.classList.add("err");
+        const rightText = item.options.find((o) => o.id === item.correct)?.text || "";
+        fb.textContent = `✗ Sai rồi. Đáp án đúng: ${item.correct}. ${rightText}`;
+        $("btnNext").classList.add("show");
+      }
+    }
+
+    function updateStats() {
+      $("statCorrect").textContent = correct;
+      $("statWrong").textContent = wrong;
+      $("statStreak").textContent = streak;
+      $("scoreLabel").textContent = `Đúng: ${correct}`;
+    }
+
+    function updateProgress() {
+      const total = deck.length;
+      const cur = Math.min(index + 1, total);
+      const pct = total ? (index / total) * 100 : 0;
+      $("progressLabel").textContent = `Câu ${cur} / ${total}`;
+      $("progressFill").style.width = `${pct}%`;
+    }
+
+    function showQuestion() {
+      clearAutoNext();
+      answered = false;
+      $("feedback").className = "feedback";
+      $("feedback").textContent = "";
+      $("btnNext").classList.remove("show");
+
+      if (index >= deck.length) {
+        showFinish();
+        return;
+      }
+
+      const item = deck[index];
+      $("qNum").textContent = `Câu ${index + 1}`;
+      $("qText").textContent = item.q;
+
+      const container = $("options");
+      container.innerHTML = "";
+
+      item.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option";
+        btn.dataset.id = opt.id;
+        btn.innerHTML = `
+          <span class="option-letter">${opt.id}</span>
+          <span class="option-text">${escapeHtml(opt.text)}</span>
+        `;
+        btn.addEventListener("click", () => pickAnswer(btn, item));
+        container.appendChild(btn);
+      });
+
+      const saved = responses[index];
+      if (saved) {
+        answered = true;
+        applyAnswerUI(item, saved.chosen, saved.isRight);
+      }
+
+      updateProgress();
+      updateNavButtons();
+    }
+
+    function goPrev() {
+      if (index <= 0) return;
+      clearAutoNext();
+      index--;
+      showQuestion();
+    }
+
+    function goNextQ() {
+      if (index >= maxReached) return;
+      clearAutoNext();
+      index++;
+      showQuestion();
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function pickAnswer(btn, item) {
+      if (answered) return;
+      answered = true;
+
+      const chosen = btn.dataset.id;
+      const isRight = chosen === item.correct;
+
+      responses[index] = { chosen, isRight };
+      maxReached = Math.max(maxReached, index + 1);
+      recalcStats();
+      applyAnswerUI(item, chosen, isRight);
+      updateNavButtons();
+
+      if (isRight) {
+        autoNextTimer = setTimeout(() => {
+          autoNextTimer = null;
+          if (index < deck.length - 1) {
+            index++;
+            showQuestion();
+          } else {
+            index++;
+            showFinish();
+          }
+        }, AUTO_NEXT_MS);
+      }
+    }
+
+    function showFinish() {
+      $("quizArea").classList.add("hidden");
+      $("finishScreen").classList.remove("hidden");
+      const total = deck.length;
+      const pct = total ? Math.round((correct / total) * 100) : 0;
+      $("finishPercent").textContent = `${pct}%`;
+      $("finishSummary").textContent =
+        `Bạn trả lời đúng ${correct}/${total} câu. Sai ${wrong} câu.`;
+    }
+
+    function startQuiz() {
+      buildDeck();
+      $("startScreen").classList.add("hidden");
+      $("finishScreen").classList.add("hidden");
+      $("quizArea").classList.remove("hidden");
+      showQuestion();
+    }
+
+    $("btnStart").addEventListener("click", startQuiz);
+    $("btnAgain").addEventListener("click", () => {
+      $("finishScreen").classList.add("hidden");
+      $("startScreen").classList.remove("hidden");
+    });
+    $("btnPrev").addEventListener("click", goPrev);
+    $("btnNextQ").addEventListener("click", goNextQ);
+
+    $("btnNext").addEventListener("click", () => {
+      clearAutoNext();
+      if (index < deck.length - 1) {
+        index++;
+        showQuestion();
+      } else {
+        index++;
+        showFinish();
+      }
+    });
+    $("btnRestart").addEventListener("click", () => {
+      if (deck.length) {
+        buildDeck();
+        showQuestion();
+      }
+    });
+    $("btnShuffle").addEventListener("click", () => {
+      if (deck.length) {
+        deck = shuffle(deck);
+        index = 0;
+        maxReached = 0;
+        correct = 0;
+        wrong = 0;
+        streak = 0;
+        responses = new Array(deck.length).fill(null);
+        clearAutoNext();
+        updateStats();
+        showQuestion();
+      }
+    });
+
+    if (typeof HCM_QUESTIONS !== "undefined") {
+      $("totalCount").textContent = HCM_QUESTIONS.length;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nguyenvana · GitHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();
+    </script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              gh: {
+                canvas: "#ffffff",
+                "canvas-subtle": "#f6f8fa",
+                border: "#d0d7de",
+                muted: "#656d76",
+                accent: "#0969da",
+                "accent-fg": "#ffffff",
+                success: "#1a7f37",
+                "contrib-1": "#9be9a8",
+                "contrib-2": "#40c463",
+                "contrib-3": "#30a14e",
+                "contrib-4": "#216e39",
+                header: "#24292f",
+                dark: {
+                  canvas: "#0d1117",
+                  "canvas-subtle": "#161b22",
+                  border: "#30363d",
+                  muted: "#8b949e",
+                  accent: "#2f81f7",
+                  header: "#010409",
+                },
+              },
+            },
+            fontFamily: {
+              gh: [
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Segoe UI",
+                "Noto Sans",
+                "Helvetica",
+                "Arial",
+                "sans-serif",
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .contrib-cell {
+        width: 11px;
+        height: 11px;
+        border-radius: 2px;
+      }
+      .tab-active {
+        border-color: #fd8c73;
+        color: #24292f;
+      }
+      .dark .tab-active {
+        border-color: #f78166;
+        color: #f0f6fc;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-gh-canvas-subtle font-gh text-[#1f2328] antialiased dark:bg-gh-dark-canvas dark:text-[#e6edf3]"
+  >
+    <!-- GitHub header -->
+    <header
+      class="border-b border-gh-border bg-gh-header text-white dark:border-gh-dark-border dark:bg-[#010409]"
+    >
+      <div
+        class="mx-auto flex max-w-[1280px] items-center gap-3 px-4 py-3 md:gap-4 md:px-6"
+      >
+        <a
+          href="github.html"
+          class="flex shrink-0 items-center text-white"
+          aria-label="GitHub Home"
+        >
+          <svg class="h-8 w-8" viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+            />
+          </svg>
+        </a>
+        <nav class="hidden items-center gap-4 text-sm font-semibold text-white/90 lg:flex">
+          <a href="#" class="hover:text-white">Pull requests</a>
+          <a href="#" class="hover:text-white">Issues</a>
+          <a href="#" class="hover:text-white">Marketplace</a>
+          <a href="#" class="hover:text-white">Explore</a>
+        </nav>
+        <div class="relative ml-auto flex-1 max-w-md">
+          <label class="sr-only" for="search">Search GitHub</label>
+          <input
+            id="search"
+            type="search"
+            placeholder="Search or jump to..."
+            class="w-full rounded-md border border-[#424a53] bg-[#0d1117] py-1.5 pl-3 pr-10 text-sm text-white placeholder:text-[#8b949e] focus:border-gh-accent focus:outline-none focus:ring-2 focus:ring-gh-accent/40"
+          />
+          <span
+            class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded border border-[#424a53] px-1.5 text-[10px] text-[#8b949e]"
+            >/</span
+          >
+        </div>
+        <div class="flex items-center gap-2 md:gap-3">
+          <button
+            type="button"
+            id="themeToggle"
+            class="flex h-8 w-8 items-center justify-center rounded-md border border-white/20 text-white/80 transition hover:bg-white/10 hover:text-white"
+            aria-label="Bật chế độ sáng"
+            title="Đổi giao diện sáng/tối"
+          >
+            <svg
+              class="hidden h-4 w-4 dark:block"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            <svg
+              class="h-4 w-4 dark:hidden"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="hidden rounded-md border border-white/25 px-3 py-1 text-xs font-semibold text-white sm:block"
+          >
+            +
+          </button>
+          <img
+            src="https://avatars.githubusercontent.com/u/583231?v=4"
+            alt=""
+            class="h-8 w-8 rounded-full ring-2 ring-white/20"
+            width="32"
+            height="32"
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-[1280px] px-4 py-6 md:px-6">
+      <!-- Profile header strip -->
+      <div
+        class="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-gh-border pb-4 dark:border-gh-dark-border"
+      >
+        <div class="flex items-center gap-4">
+          <img
+            src="https://avatars.githubusercontent.com/u/583231?v=4"
+            alt="Avatar nguyenvana"
+            class="h-16 w-16 rounded-full border border-gh-border dark:border-gh-dark-border md:h-20 md:w-20"
+            width="80"
+            height="80"
+          />
+          <div>
+            <h1 class="text-2xl font-semibold leading-tight md:text-[26px]">
+              nguyenvana
+            </h1>
+            <p class="text-xl text-gh-muted dark:text-gh-dark-muted">
+              Nguyễn Văn A
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 text-sm font-medium shadow-sm transition hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:bg-[#21262d]"
+          >
+            Follow
+          </button>
+          <button
+            type="button"
+            class="rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 text-sm font-medium shadow-sm transition hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:bg-[#21262d]"
+          >
+            Sponsor
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6 lg:flex-row">
+        <!-- Sidebar -->
+        <aside class="w-full shrink-0 lg:w-[296px]">
+          <img
+            src="https://avatars.githubusercontent.com/u/583231?v=4"
+            alt=""
+            class="mb-4 hidden w-full rounded-full border border-gh-border dark:border-gh-dark-border lg:block"
+            width="296"
+            height="296"
+          />
+          <h2 class="text-2xl font-semibold lg:hidden">nguyenvana</h2>
+          <p
+            class="mt-1 text-xl text-gh-muted dark:text-gh-dark-muted lg:mt-0"
+          >
+            Nguyễn Văn A
+          </p>
+          <p class="mt-3 text-base leading-relaxed">
+            Full-stack developer · Open source enthusiast · Đam mê TypeScript,
+            React và DevOps nhẹ nhàng.
+          </p>
+
+          <ul
+            class="mt-4 space-y-1 text-sm text-gh-muted dark:text-gh-dark-muted"
+          >
+            <li class="flex items-center gap-2">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-7v2h1a.75.75 0 010 1.5h-2.5A2.5 2.5 0 012 14.5v-13zm10.25 0v11h-8.5V2.5a1 1 0 011-1h7.5z"
+                />
+              </svg>
+              <span>Công ty Demo Tech</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="m12.596 11.596-3.536 3.536a1.5 1.5 0 01-2.122 0l-3.536-3.536a6.5 6.5 0 111.314-8.072 1.5 1.5 0 012.122 0 6.5 6.5 0 018.072 1.314 1.5 1.5 0 010 2.122zM7.5 6a1.5 1.5 0 103 0 1.5 1.5 0 00-3 0z"
+                />
+              </svg>
+              <span>Hồ Chí Minh, Việt Nam</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                />
+              </svg>
+              <a
+                href="#"
+                class="text-gh-accent hover:underline dark:text-gh-dark-accent"
+                >github.com/nguyenvana</a
+              >
+            </li>
+          </ul>
+
+          <p class="mt-4 text-sm">
+            <a href="#" class="font-semibold hover:text-gh-accent dark:hover:text-gh-dark-accent"
+              ><span class="text-[#1f2328] dark:text-[#e6edf3]">248</span>
+              <span class="font-normal text-gh-muted dark:text-gh-dark-muted"
+                >followers</span
+              ></a
+            >
+            ·
+            <a href="#" class="font-semibold hover:text-gh-accent dark:hover:text-gh-dark-accent"
+              ><span class="text-[#1f2328] dark:text-[#e6edf3]">96</span>
+              <span class="font-normal text-gh-muted dark:text-gh-dark-muted"
+                >following</span
+              ></a
+            >
+          </p>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span
+              class="rounded-full bg-[#ddf4ff] px-2 py-0.5 text-xs font-medium text-[#0969da] dark:bg-[#388bfd26] dark:text-[#58a6ff]"
+              >typescript</span
+            >
+            <span
+              class="rounded-full bg-[#dafbe1] px-2 py-0.5 text-xs font-medium text-[#1a7f37] dark:bg-[#2ea04326] dark:text-[#3fb950]"
+              >react</span
+            >
+            <span
+              class="rounded-full bg-[#fff8c5] px-2 py-0.5 text-xs font-medium text-[#9a6700] dark:bg-[#bb800926] dark:text-[#d29922]"
+              >nodejs</span
+            >
+          </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="min-w-0 flex-1">
+          <!-- Tabs -->
+          <nav
+            class="mb-4 flex gap-6 overflow-x-auto border-b border-gh-border text-sm dark:border-gh-dark-border"
+            aria-label="Profile tabs"
+            role="tablist"
+          >
+            <button
+              type="button"
+              role="tab"
+              id="tab-overview"
+              aria-selected="true"
+              aria-controls="panel-overview"
+              data-tab="overview"
+              class="tab-btn tab-active -mb-px shrink-0 border-b-2 px-1 py-3 font-semibold"
+            >
+              Overview
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-repositories"
+              aria-selected="false"
+              aria-controls="panel-repositories"
+              data-tab="repositories"
+              class="tab-btn -mb-px shrink-0 border-b-2 border-transparent px-1 py-3 text-gh-muted transition hover:border-gh-border hover:text-[#1f2328] dark:text-gh-dark-muted dark:hover:border-gh-dark-border dark:hover:text-[#e6edf3]"
+            >
+              Repositories
+              <span
+                class="ml-1 rounded-full bg-[#eaeef2] px-1.5 py-0.5 text-xs dark:bg-[#30363d]"
+                >42</span
+              >
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-projects"
+              aria-selected="false"
+              aria-controls="panel-projects"
+              data-tab="projects"
+              class="tab-btn -mb-px shrink-0 border-b-2 border-transparent px-1 py-3 text-gh-muted transition hover:border-gh-border dark:text-gh-dark-muted dark:hover:border-gh-dark-border"
+            >
+              Projects
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-packages"
+              aria-selected="false"
+              aria-controls="panel-packages"
+              data-tab="packages"
+              class="tab-btn -mb-px shrink-0 border-b-2 border-transparent px-1 py-3 text-gh-muted transition hover:border-gh-border dark:text-gh-dark-muted dark:hover:border-gh-dark-border"
+            >
+              Packages
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-stars"
+              aria-selected="false"
+              aria-controls="panel-stars"
+              data-tab="stars"
+              class="tab-btn -mb-px shrink-0 border-b-2 border-transparent px-1 py-3 text-gh-muted transition hover:border-gh-border dark:text-gh-dark-muted dark:hover:border-gh-dark-border"
+            >
+              Stars
+              <span
+                class="ml-1 rounded-full bg-[#eaeef2] px-1.5 py-0.5 text-xs dark:bg-[#30363d]"
+                >18</span
+              >
+            </button>
+          </nav>
+
+          <!-- Overview panel -->
+          <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="tab-panel">
+
+          <!-- README card -->
+          <article
+            class="mb-6 rounded-md border border-gh-border bg-gh-canvas p-5 dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle"
+          >
+            <h3 class="text-base font-semibold">👋 Xin chào, mình là Văn</h3>
+            <div
+              class="prose-github mt-3 space-y-2 text-sm leading-relaxed text-gh-muted dark:text-gh-dark-muted"
+            >
+              <p>
+                Lập trình viên web với ~5 năm kinh nghiệm. Thích xây UI mượt,
+                API gọn và CI đơn giản.
+              </p>
+              <ul class="list-inside list-disc space-y-1">
+                <li>🔭 Đang làm: dashboard analytics nội bộ</li>
+                <li>🌱 Học: Rust &amp; WebGPU</li>
+                <li>💬 Hỏi mình về React, Vite, hoặc GitHub Actions</li>
+                <li>📫 Email: van.a@example.com</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Pinned -->
+          <section class="mb-6">
+            <h2 class="mb-3 text-sm font-normal text-gh-muted dark:text-gh-dark-muted">
+              Pinned
+            </h2>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <a
+                href="#"
+                class="group rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-[#0969da] dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent"
+              >
+                <div class="flex items-center gap-2 text-sm">
+                  <svg class="h-4 w-4 text-gh-muted" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-7v2h1a.75.75 0 010 1.5h-2.5A2.5 2.5 0 012 14.5v-13z"
+                    />
+                  </svg>
+                  <span class="font-semibold text-gh-accent group-hover:underline dark:text-gh-dark-accent"
+                    >awesome-ui-kit</span
+                  >
+                  <span class="ml-auto rounded-full border border-gh-border px-2 py-0.5 text-xs dark:border-gh-dark-border"
+                    >Public</span
+                  >
+                </div>
+                <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  Bộ component React + Tailwind cho dashboard admin
+                </p>
+                <p class="mt-3 flex gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  <span class="flex items-center gap-1"
+                    ><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span>
+                    TypeScript</span
+                  >
+                  <span>★ 1.2k</span>
+                </p>
+              </a>
+              <a
+                href="#"
+                class="group rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-[#0969da] dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent"
+              >
+                <div class="flex items-center gap-2 text-sm">
+                  <svg class="h-4 w-4 text-gh-muted" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-7v2h1a.75.75 0 010 1.5h-2.5A2.5 2.5 0 012 14.5v-13z"
+                    />
+                  </svg>
+                  <span class="font-semibold text-gh-accent group-hover:underline dark:text-gh-dark-accent"
+                    >vite-starter-vn</span
+                  >
+                  <span class="ml-auto rounded-full border border-gh-border px-2 py-0.5 text-xs dark:border-gh-dark-border"
+                    >Public</span
+                  >
+                </div>
+                <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  Template Vite + ESLint + i18n tiếng Việt
+                </p>
+                <p class="mt-3 flex gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  <span class="flex items-center gap-1"
+                    ><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#f1e05a]"></span>
+                    JavaScript</span
+                  >
+                  <span>★ 384</span>
+                </p>
+              </a>
+              <a
+                href="#"
+                class="group rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-[#0969da] dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent"
+              >
+                <div class="flex items-center gap-2 text-sm">
+                  <svg class="h-4 w-4 text-gh-muted" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-7v2h1a.75.75 0 010 1.5h-2.5A2.5 2.5 0 012 14.5v-13z"
+                    />
+                  </svg>
+                  <span class="font-semibold text-gh-accent group-hover:underline dark:text-gh-dark-accent"
+                    >gh-actions-recipes</span
+                  >
+                  <span class="ml-auto rounded-full border border-gh-border px-2 py-0.5 text-xs dark:border-gh-dark-border"
+                    >Public</span
+                  >
+                </div>
+                <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  Workflow mẫu: test, build, deploy preview
+                </p>
+                <p class="mt-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  ★ 97
+                </p>
+              </a>
+              <a
+                href="#"
+                class="group rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-[#0969da] dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent"
+              >
+                <div class="flex items-center gap-2 text-sm">
+                  <svg class="h-4 w-4 text-gh-muted" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-7v2h1a.75.75 0 010 1.5h-2.5A2.5 2.5 0 012 14.5v-13z"
+                    />
+                  </svg>
+                  <span class="font-semibold text-gh-accent group-hover:underline dark:text-gh-dark-accent"
+                    >mini-api-go</span
+                  >
+                  <span class="ml-auto rounded-full border border-gh-border px-2 py-0.5 text-xs dark:border-gh-dark-border"
+                    >Public</span
+                  >
+                </div>
+                <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  REST API nhỏ với Go + chi router
+                </p>
+                <p class="mt-3 flex gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                  <span class="flex items-center gap-1"
+                    ><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#00ADD8]"></span>
+                    Go</span
+                  >
+                  <span>★ 56</span>
+                </p>
+              </a>
+            </div>
+          </section>
+
+          <!-- Contributions -->
+          <section
+            class="rounded-md border border-gh-border bg-gh-canvas p-4 dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle"
+          >
+            <h2 class="text-base font-normal">
+              <span class="font-semibold">1,247</span>
+              <span class="text-gh-muted dark:text-gh-dark-muted"
+                >contributions in the last year</span
+              >
+            </h2>
+            <div class="mt-4 overflow-x-auto">
+              <div id="contribGrid" class="inline-flex gap-[3px]"></div>
+            </div>
+            <div
+              class="mt-3 flex items-center justify-end gap-1 text-xs text-gh-muted dark:text-gh-dark-muted"
+            >
+              <span>Less</span>
+              <span class="contrib-cell bg-[#ebedf0] dark:bg-[#161b22]"></span>
+              <span class="contrib-cell bg-gh-contrib-1"></span>
+              <span class="contrib-cell bg-gh-contrib-2"></span>
+              <span class="contrib-cell bg-gh-contrib-3"></span>
+              <span class="contrib-cell bg-gh-contrib-4"></span>
+              <span>More</span>
+            </div>
+          </section>
+
+          <!-- Activity -->
+          <section class="mt-6">
+            <h2
+              class="mb-3 border-b border-gh-border pb-2 text-base font-semibold dark:border-gh-dark-border"
+            >
+              Contribution activity
+            </h2>
+            <div class="space-y-4">
+              <div class="flex gap-3 text-sm">
+                <div
+                  class="w-20 shrink-0 text-gh-muted dark:text-gh-dark-muted"
+                >
+                  Jun 1
+                </div>
+                <div>
+                  <p>
+                    Created repository
+                    <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent"
+                      >demo-portfolio</a
+                    >
+                  </p>
+                  <p class="mt-1 text-xs text-gh-muted dark:text-gh-dark-muted">
+                    1 commit · TypeScript
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-3 text-sm">
+                <div
+                  class="w-20 shrink-0 text-gh-muted dark:text-gh-dark-muted"
+                >
+                  May 28
+                </div>
+                <div>
+                  <p>
+                    Opened pull request
+                    <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent"
+                      >#42 — Fix dark mode flash</a
+                    >
+                    in
+                    <a href="#" class="text-gh-accent hover:underline dark:text-gh-dark-accent"
+                      >awesome-ui-kit</a
+                    >
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-3 text-sm">
+                <div
+                  class="w-20 shrink-0 text-gh-muted dark:text-gh-dark-muted"
+                >
+                  May 12
+                </div>
+                <div>
+                  <p>
+                    Starred
+                    <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent"
+                      >vercel/next.js</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          </div><!-- /panel-overview -->
+
+          <!-- Repositories panel -->
+          <div id="panel-repositories" role="tabpanel" aria-labelledby="tab-repositories" class="tab-panel hidden">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="relative flex-1">
+                <label class="sr-only" for="repoSearch">Find a repository</label>
+                <input
+                  id="repoSearch"
+                  type="search"
+                  placeholder="Find a repository…"
+                  class="w-full rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 pl-9 text-sm shadow-sm focus:border-gh-accent focus:outline-none focus:ring-2 focus:ring-gh-accent/30 dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:focus:border-gh-dark-accent dark:focus:ring-gh-dark-accent/30"
+                />
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gh-muted dark:text-gh-dark-muted" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 11-1.275 1.275l-3.045-3.045zm-5.962-1.29a4.5 4.5 0 105.963-5.963 4.5 4.5 0 00-5.963 5.963z"/>
+                </svg>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <select class="rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 text-sm shadow-sm dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle">
+                  <option>Type</option>
+                  <option>All</option>
+                  <option>Public</option>
+                  <option>Private</option>
+                  <option>Sources</option>
+                  <option>Forks</option>
+                </select>
+                <select class="rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 text-sm shadow-sm dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle">
+                  <option>Sort</option>
+                  <option>Last updated</option>
+                  <option>Name</option>
+                  <option>Stars</option>
+                </select>
+                <button type="button" class="rounded-md border border-gh-border bg-[#2da44e] px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-[#2c974b] dark:border-[#238636] dark:bg-[#238636] dark:hover:bg-[#2ea043]">
+                  New
+                </button>
+              </div>
+            </div>
+
+            <p class="mb-4 text-sm text-gh-muted dark:text-gh-dark-muted">
+              <span id="repoCount">42</span> repositories
+            </p>
+
+            <ul id="repoList" class="divide-y divide-gh-border dark:divide-gh-dark-border">
+              <li class="repo-item py-4" data-name="awesome-ui-kit">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">awesome-ui-kit</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Bộ component React + Tailwind cho dashboard admin</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span> TypeScript</span>
+                      <span>★ 1.2k</span>
+                      <span>Updated yesterday</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="vite-starter-vn">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">vite-starter-vn</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Template Vite + ESLint + i18n tiếng Việt</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#f1e05a]"></span> JavaScript</span>
+                      <span>★ 384</span>
+                      <span>Updated 3 days ago</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="gh-actions-recipes">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">gh-actions-recipes</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Workflow mẫu: test, build, deploy preview</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">★ 97 · Updated last week</p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="mini-api-go">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">mini-api-go</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">REST API nhỏ với Go + chi router</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#00ADD8]"></span> Go</span>
+                      <span>★ 56</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="demo-portfolio">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">demo-portfolio</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Portfolio cá nhân — Next.js 15 + MDX</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span> TypeScript</span>
+                      <span>Updated today</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="react-hooks-vn">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">react-hooks-vn</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Custom hooks thường dùng — docs tiếng Việt</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span> TypeScript</span>
+                      <span>★ 210</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="docker-dev-env">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">docker-dev-env</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Compose stack: Postgres, Redis, Mailhog cho local dev</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">★ 44 · Updated 2 weeks ago</p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-gh-canvas-subtle px-3 py-1 text-xs font-semibold shadow-sm hover:bg-[#eaeef2] dark:border-gh-dark-border dark:bg-[#21262d] dark:hover:bg-[#30363d]">Star</button>
+                </div>
+              </li>
+              <li class="repo-item py-4" data-name="internal-analytics">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">internal-analytics</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Private</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Dashboard nội bộ — không public</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span> TypeScript</span>
+                      <span>Updated 5 days ago</span>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <nav class="mt-6 flex items-center justify-center gap-1 text-sm" aria-label="Repository pagination">
+              <button type="button" class="rounded-md border border-gh-border px-3 py-1 text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted" disabled>Previous</button>
+              <button type="button" class="rounded-md border border-gh-border bg-gh-accent px-3 py-1 font-semibold text-white dark:border-gh-dark-accent dark:bg-gh-dark-accent">1</button>
+              <button type="button" class="rounded-md border border-gh-border px-3 py-1 hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:hover:bg-[#21262d]">2</button>
+              <button type="button" class="rounded-md border border-gh-border px-3 py-1 hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:hover:bg-[#21262d]">3</button>
+              <span class="px-2 text-gh-muted dark:text-gh-dark-muted">…</span>
+              <button type="button" class="rounded-md border border-gh-border px-3 py-1 hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:hover:bg-[#21262d]">6</button>
+              <button type="button" class="rounded-md border border-gh-border px-3 py-1 hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:hover:bg-[#21262d]">Next</button>
+            </nav>
+            <p class="mt-3 text-center text-xs text-gh-muted dark:text-gh-dark-muted">Showing 1–8 of 42 repositories</p>
+          </div>
+
+          <!-- Projects panel -->
+          <div id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" class="tab-panel hidden">
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <h2 class="text-base font-semibold">Projects</h2>
+              <button type="button" class="rounded-md border border-gh-border bg-[#2da44e] px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-[#2c974b] dark:border-[#238636] dark:bg-[#238636]">
+                New project
+              </button>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <a href="#" class="group block rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-gh-accent dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="font-semibold group-hover:text-gh-accent dark:group-hover:text-gh-dark-accent">🚀 Q3 Product Roadmap</h3>
+                  <span class="shrink-0 rounded-full bg-[#ddf4ff] px-2 py-0.5 text-xs text-[#0969da] dark:bg-[#388bfd26] dark:text-[#58a6ff]">Open</span>
+                </div>
+                <p class="mt-2 text-sm text-gh-muted dark:text-gh-dark-muted">Board Kanban cho sprint Q3 — 24 items</p>
+                <p class="mt-3 text-xs text-gh-muted dark:text-gh-dark-muted">Updated 2 hours ago · 3 collaborators</p>
+              </a>
+              <a href="#" class="group block rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-gh-accent dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="font-semibold group-hover:text-gh-accent dark:group-hover:text-gh-dark-accent">🐛 Bug Bash May 2026</h3>
+                  <span class="shrink-0 rounded-full bg-[#dafbe1] px-2 py-0.5 text-xs text-[#1a7f37] dark:bg-[#2ea04326] dark:text-[#3fb950]">Closed</span>
+                </div>
+                <p class="mt-2 text-sm text-gh-muted dark:text-gh-dark-muted">Theo dõi bug UI/UX trước release v2.4</p>
+                <p class="mt-3 text-xs text-gh-muted dark:text-gh-dark-muted">Updated May 30 · 8 collaborators</p>
+              </a>
+              <a href="#" class="group block rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-gh-accent dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="font-semibold group-hover:text-gh-accent dark:group-hover:text-gh-dark-accent">📚 Docs Migration</h3>
+                  <span class="shrink-0 rounded-full bg-[#ddf4ff] px-2 py-0.5 text-xs text-[#0969da] dark:bg-[#388bfd26] dark:text-[#58a6ff]">Open</span>
+                </div>
+                <p class="mt-2 text-sm text-gh-muted dark:text-gh-dark-muted">Chuyển docs sang Docusaurus — table view</p>
+                <p class="mt-3 text-xs text-gh-muted dark:text-gh-dark-muted">Updated yesterday · 2 collaborators</p>
+              </a>
+              <a href="#" class="group block rounded-md border border-gh-border bg-gh-canvas p-4 transition hover:border-gh-accent dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:border-gh-dark-accent">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="font-semibold group-hover:text-gh-accent dark:group-hover:text-gh-dark-accent">🎨 Design System v3</h3>
+                  <span class="shrink-0 rounded-full bg-[#ddf4ff] px-2 py-0.5 text-xs text-[#0969da] dark:bg-[#388bfd26] dark:text-[#58a6ff]">Open</span>
+                </div>
+                <p class="mt-2 text-sm text-gh-muted dark:text-gh-dark-muted">Tokens, Figma sync, component audit</p>
+                <p class="mt-3 text-xs text-gh-muted dark:text-gh-dark-muted">Updated 4 days ago · 5 collaborators</p>
+              </a>
+            </div>
+
+            <p class="mt-6 text-center text-sm text-gh-muted dark:text-gh-dark-muted">
+              <a href="#" class="text-gh-accent hover:underline dark:text-gh-dark-accent">View all projects</a>
+            </p>
+          </div>
+
+          <!-- Packages panel -->
+          <div id="panel-packages" role="tabpanel" aria-labelledby="tab-packages" class="tab-panel hidden">
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div class="relative flex-1 max-w-md">
+                <label class="sr-only" for="packageSearch">Search packages</label>
+                <input
+                  id="packageSearch"
+                  type="search"
+                  placeholder="Search packages…"
+                  class="w-full rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 pl-9 text-sm shadow-sm focus:border-gh-accent focus:outline-none dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:focus:border-gh-dark-accent"
+                />
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gh-muted dark:text-gh-dark-muted" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 11-1.275 1.275l-3.045-3.045zm-5.962-1.29a4.5 4.5 0 105.963-5.963 4.5 4.5 0 00-5.963 5.963z"/>
+                </svg>
+              </div>
+              <select class="rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 text-sm shadow-sm dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle">
+                <option>Type: All</option>
+                <option>npm</option>
+                <option>Container</option>
+                <option>GitHub Actions</option>
+              </select>
+            </div>
+
+            <ul class="divide-y divide-gh-border dark:divide-gh-dark-border">
+              <li class="py-4">
+                <div class="flex flex-wrap items-start gap-3">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-gh-border bg-gh-canvas-subtle dark:border-gh-dark-border dark:bg-[#21262d]">
+                    <svg class="h-5 w-5 text-[#cb3837]" viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM7.5 20.454H4.363V9h3.137v11.454zM5.932 7.527a1.818 1.818 0 110-3.636 1.818 1.818 0 010 3.636zm14.522 12.927h-3.137v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.014v1.561h.043c.42-.796 1.447-1.637 2.979-1.637 3.186 0 3.776 2.097 3.776 4.823v6.707z"/></svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-lg font-semibold">
+                      <a href="#" class="text-gh-accent hover:underline dark:text-gh-dark-accent">@nguyenvana/ui-kit</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">React component library published to GitHub Packages (npm)</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="rounded-full border border-gh-border px-2 py-0.5 dark:border-gh-dark-border">npm</span>
+                      <span class="ml-2">Published 12 days ago · v2.4.1</span>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="py-4">
+                <div class="flex flex-wrap items-start gap-3">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-gh-border bg-gh-canvas-subtle dark:border-gh-dark-border dark:bg-[#21262d]">
+                    <svg class="h-5 w-5 text-[#2496ed]" viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185zm-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185zm-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185zM23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.203-.226.327c-.284.438-.49.922-.612 1.431-.232.959-.086 1.842.416 2.566-.595.344-1.698.993-2.284 2.413-.403.984-.177 2.018.636 3.082-1.372 1.372-2.702 2.702-4.054 4.054-.595-.403-1.098-.636-1.431-.636-.333 0-.595.232-.636.636-.04.403.232.918.636 1.431 1.352-1.352 2.682-2.682 4.054-4.054 1.372 1.372 2.702 2.702 4.054 4.054.403-.513.676-1.028.636-1.431-.04-.404-.303-.636-.636-.636-.333 0-.836.232-1.431.636-1.352-1.352-2.682-2.702-4.054-4.054.813-1.064 1.039-2.098.636-3.082-.586-1.42-1.689-2.069-2.284-2.413.502-.724.648-1.607.416-2.566-.122-.509-.328-.993-.612-1.431l-.226-.327-.344.203c-.063.036-1.468.866-1.716 2.566-.334-.057-.672-.086-1.01-.087-1.282 0-1.889.459-1.954.51-.065.051-1.118.878-.087 2.744.413.744 1.282 1.613 2.744 2.566-.744.413-1.613 1.282-2.566 2.744-1.866 1.031-2.693-.022-2.744-.087-.051-.065-.51-.672-.51-1.954.001-.338.03-.676.087-1.01-1.7-.248-2.53-1.653-2.566-1.716l-.203-.344-.327.226c-.438.284-.922.49-1.431.612-.959.232-1.842.086-2.566-.416-.344.595-.993 1.698-2.413 2.284-.984.403-2.018.177-3.082-.636 1.372-1.372 2.702-2.702 4.054-4.054-.513-.403-1.028-.676-1.431-.636-.404.04-.636.303-.636.636 0 .333.232.836.636 1.431-1.352 1.352-2.682 2.682-4.054 4.054-1.372-1.372-2.702-2.702-4.054-4.054-.403.513-.676 1.028-.636 1.431.04.404.303.636.636.636.333 0 .836-.232 1.431-.636 1.352 1.352 2.682 2.702 4.054 4.054-.813 1.064-1.039 2.098-.636 3.082.586 1.42 1.689 2.069 2.284 2.413-.502.724-.648 1.607-.416 2.566.122.509.328.993.612 1.431l.226.327.344-.203c.036-.063.866-1.468 2.566-1.716-.057-.334-.086-.672-.087-1.01 0-1.282.459-1.889.51-1.954.051-.065.878-1.118 2.744-.087.744.413 1.613 1.282 2.566 2.744-1.031 1.866-2.693.022-2.744.087z"/></svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-lg font-semibold">
+                      <a href="#" class="text-gh-accent hover:underline dark:text-gh-dark-accent">ghcr.io/nguyenvana/api-server</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Docker image cho mini-api-go — multi-arch build</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="rounded-full border border-gh-border px-2 py-0.5 dark:border-gh-dark-border">Container</span>
+                      <span class="ml-2">Published 3 weeks ago · latest</span>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="py-4">
+                <div class="flex flex-wrap items-start gap-3">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-gh-border bg-gh-canvas-subtle dark:border-gh-dark-border dark:bg-[#21262d]">
+                    <svg class="h-5 w-5 text-gh-muted dark:text-gh-dark-muted" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-lg font-semibold">
+                      <a href="#" class="text-gh-accent hover:underline dark:text-gh-dark-accent">nguyenvana/deploy-action</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">GitHub Action deploy lên staging/production</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="rounded-full border border-gh-border px-2 py-0.5 dark:border-gh-dark-border">GitHub Actions</span>
+                      <span class="ml-2">Published 1 month ago · v1.2.0</span>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="mt-8 rounded-md border border-dashed border-gh-border p-8 text-center dark:border-gh-dark-border">
+              <p class="text-sm text-gh-muted dark:text-gh-dark-muted">Publish your first package</p>
+              <button type="button" class="mt-3 rounded-md border border-gh-border bg-gh-canvas px-4 py-2 text-sm font-semibold shadow-sm hover:bg-gh-canvas-subtle dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:hover:bg-[#21262d]">
+                Learn about GitHub Packages
+              </button>
+            </div>
+          </div>
+
+          <!-- Stars panel -->
+          <div id="panel-stars" role="tabpanel" aria-labelledby="tab-stars" class="tab-panel hidden">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="relative flex-1 max-w-md">
+                <label class="sr-only" for="starSearch">Search starred repositories</label>
+                <input
+                  id="starSearch"
+                  type="search"
+                  placeholder="Search stars…"
+                  class="w-full rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 pl-9 text-sm shadow-sm focus:border-gh-accent focus:outline-none dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle dark:focus:border-gh-dark-accent"
+                />
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gh-muted dark:text-gh-dark-muted" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 11-1.275 1.275l-3.045-3.045zm-5.962-1.29a4.5 4.5 0 105.963-5.963 4.5 4.5 0 00-5.963 5.963z"/>
+                </svg>
+              </div>
+              <select class="rounded-md border border-gh-border bg-gh-canvas px-3 py-1.5 text-sm shadow-sm dark:border-gh-dark-border dark:bg-gh-dark-canvas-subtle">
+                <option>Sort by: Recently starred</option>
+                <option>Stars</option>
+                <option>Name</option>
+              </select>
+            </div>
+
+            <p class="mb-4 text-sm text-gh-muted dark:text-gh-dark-muted">18 starred repositories</p>
+
+            <ul id="starList" class="divide-y divide-gh-border dark:divide-gh-dark-border">
+              <li class="star-item py-4" data-name="next.js">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">vercel/next.js</a>
+                      <span class="ml-2 rounded-full border border-gh-border px-2 py-0.5 text-xs font-normal text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted">Public</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">The React Framework for the Web</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span> TypeScript</span>
+                      <span>★ 128k</span>
+                      <span>Starred May 12</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-[#fff8c5] px-3 py-1 text-xs font-semibold text-[#9a6700] shadow-sm dark:border-[#bb800926] dark:bg-[#bb800926] dark:text-[#d29922]">Unstar</button>
+                </div>
+              </li>
+              <li class="star-item py-4" data-name="tailwindcss">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">tailwindlabs/tailwindcss</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">A utility-first CSS framework for rapid UI development</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span>★ 82k</span>
+                      <span>Starred Apr 20</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-[#fff8c5] px-3 py-1 text-xs font-semibold text-[#9a6700] shadow-sm dark:border-[#bb800926] dark:bg-[#bb800926] dark:text-[#d29922]">Unstar</button>
+                </div>
+              </li>
+              <li class="star-item py-4" data-name="vite">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">vitejs/vite</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Next generation frontend tooling</p>
+                    <p class="mt-2 flex flex-wrap gap-3 text-xs text-gh-muted dark:text-gh-dark-muted">
+                      <span class="flex items-center gap-1"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3178c6]"></span> TypeScript</span>
+                      <span>★ 71k</span>
+                    </p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-[#fff8c5] px-3 py-1 text-xs font-semibold text-[#9a6700] shadow-sm dark:border-[#bb800926] dark:bg-[#bb800926] dark:text-[#d29922]">Unstar</button>
+                </div>
+              </li>
+              <li class="star-item py-4" data-name="react">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">facebook/react</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">The library for web and native user interfaces</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">★ 230k · Starred Mar 8</p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-[#fff8c5] px-3 py-1 text-xs font-semibold text-[#9a6700] shadow-sm dark:border-[#bb800926] dark:bg-[#bb800926] dark:text-[#d29922]">Unstar</button>
+                </div>
+              </li>
+              <li class="star-item py-4" data-name="typescript">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">microsoft/TypeScript</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">TypeScript is a superset of JavaScript that compiles to clean JS</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">★ 102k</p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-[#fff8c5] px-3 py-1 text-xs font-semibold text-[#9a6700] shadow-sm dark:border-[#bb800926] dark:bg-[#bb800926] dark:text-[#d29922]">Unstar</button>
+                </div>
+              </li>
+              <li class="star-item py-4" data-name="playwright">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-xl">
+                      <a href="#" class="font-semibold text-gh-accent hover:underline dark:text-gh-dark-accent">microsoft/playwright</a>
+                    </h3>
+                    <p class="mt-1 text-sm text-gh-muted dark:text-gh-dark-muted">Playwright is a framework for Web Testing and Automation</p>
+                    <p class="mt-2 text-xs text-gh-muted dark:text-gh-dark-muted">★ 68k · Starred Feb 14</p>
+                  </div>
+                  <button type="button" class="rounded-md border border-gh-border bg-[#fff8c5] px-3 py-1 text-xs font-semibold text-[#9a6700] shadow-sm dark:border-[#bb800926] dark:bg-[#bb800926] dark:text-[#d29922]">Unstar</button>
+                </div>
+              </li>
+            </ul>
+
+            <p class="mt-4 text-center text-xs text-gh-muted dark:text-gh-dark-muted">Showing 6 of 18 starred repositories</p>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <footer
+      class="mt-10 border-t border-gh-border px-4 py-8 text-center text-xs text-gh-muted dark:border-gh-dark-border dark:text-gh-dark-muted md:px-6"
+    >
+      <p>
+        Giao diện mô phỏng GitHub — không liên kết github.com thật.
+        <a
+          href="index.html"
+          class="ml-1 text-gh-accent hover:underline dark:text-gh-dark-accent"
+          >← Trang Riot demo</a
+        >
+      </p>
+      <p class="mt-2">© 2026 Mock Profile</p>
+    </footer>
+
+    <script>
+      const themeToggle = document.getElementById("themeToggle");
+      const root = document.documentElement;
+
+      function applyTheme(theme) {
+        const isDark = theme === "dark";
+        root.classList.toggle("dark", isDark);
+        localStorage.setItem("theme", theme);
+        themeToggle.setAttribute(
+          "aria-label",
+          isDark ? "Bật chế độ sáng" : "Bật chế độ tối"
+        );
+      }
+
+      themeToggle.addEventListener("click", () => {
+        applyTheme(root.classList.contains("dark") ? "light" : "dark");
+      });
+      themeToggle.setAttribute(
+        "aria-label",
+        root.classList.contains("dark") ? "Bật chế độ sáng" : "Bật chế độ tối"
+      );
+
+      const levels = [
+        "bg-[#ebedf0] dark:bg-[#161b22]",
+        "bg-gh-contrib-1",
+        "bg-gh-contrib-2",
+        "bg-gh-contrib-3",
+        "bg-gh-contrib-4",
+      ];
+      const weeks = 52;
+      const days = 7;
+      const grid = document.getElementById("contribGrid");
+
+      for (let w = 0; w < weeks; w++) {
+        const col = document.createElement("div");
+        col.className = "flex flex-col gap-[3px]";
+        for (let d = 0; d < days; d++) {
+          const cell = document.createElement("span");
+          const level =
+            Math.random() < 0.25 ? 0 : Math.floor(Math.random() * 4) + 1;
+          cell.className = "contrib-cell " + levels[level];
+          cell.title = level ? level + " contributions" : "No contributions";
+          col.appendChild(cell);
+        }
+        grid.appendChild(col);
+      }
+
+      document.querySelectorAll("button").forEach((btn) => {
+        if (btn.id === "themeToggle" || btn.classList.contains("tab-btn")) return;
+        btn.addEventListener("click", () => {
+          alert("Trang demo — nút không thực hiện hành động thật.");
+        });
+      });
+
+      const tabBtns = document.querySelectorAll(".tab-btn");
+      const tabPanels = document.querySelectorAll(".tab-panel");
+      const tabInactive =
+        "-mb-px shrink-0 border-b-2 border-transparent px-1 py-3 text-gh-muted transition hover:border-gh-border hover:text-[#1f2328] dark:text-gh-dark-muted dark:hover:border-gh-dark-border dark:hover:text-[#e6edf3]";
+      const tabActive =
+        "tab-active -mb-px shrink-0 border-b-2 px-1 py-3 font-semibold";
+
+      function switchTab(name) {
+        tabBtns.forEach((btn) => {
+          const active = btn.dataset.tab === name;
+          btn.setAttribute("aria-selected", active ? "true" : "false");
+          btn.className = "tab-btn " + (active ? tabActive : tabInactive);
+        });
+        tabPanels.forEach((panel) => {
+          panel.classList.toggle("hidden", panel.id !== "panel-" + name);
+        });
+        history.replaceState(null, "", "#" + name);
+      }
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+      });
+
+      const hash = location.hash.slice(1);
+      const validTabs = ["overview", "repositories", "projects", "packages", "stars"];
+      if (validTabs.includes(hash)) switchTab(hash);
+
+      function filterList(inputId, itemSelector, countId, total) {
+        const input = document.getElementById(inputId);
+        const items = document.querySelectorAll(itemSelector);
+        const countEl = document.getElementById(countId);
+        if (!input) return;
+
+        input.addEventListener("input", () => {
+          const q = input.value.trim().toLowerCase();
+          let visible = 0;
+          items.forEach((item) => {
+            const name = item.dataset.name || item.textContent.toLowerCase();
+            const show = !q || name.includes(q);
+            item.classList.toggle("hidden", !show);
+            if (show) visible++;
+          });
+          if (countEl) {
+            countEl.textContent = q ? visible : total;
+          }
+        });
+      }
+
+      filterList("repoSearch", ".repo-item", "repoCount", 42);
+      filterList("starSearch", ".star-item", null, 18);
+    </script>
+  </body>
+</html>
