@@ -55,10 +55,187 @@
       line-height: 1.5;
     }
 
-    .app {
-      max-width: 720px;
+    .app-container {
+      max-width: 1100px;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
       padding: 20px 16px 40px;
+    }
+
+    .app-main {
+      min-width: 0;
+    }
+
+    .app-sidebar {
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+    }
+
+    .chat-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px !important;
+      margin-bottom: 0 !important;
+    }
+
+    .chat-header {
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .chat-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .chat-subtitle {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+      margin-bottom: 12px;
+    }
+
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .chat-msg.other {
+      background: var(--bg);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .chat-msg.me {
+      background: var(--primary);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-msg-sender {
+      font-weight: 700;
+      font-size: 0.75rem;
+      margin-bottom: 2px;
+      color: var(--primary);
+    }
+
+    .chat-msg.me .chat-msg-sender {
+      color: #ffeb3b;
+    }
+
+    .chat-msg-text {
+      word-break: break-word;
+    }
+
+    .chat-msg-time {
+      font-size: 0.65rem;
+      align-self: flex-end;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    .chat-input-area {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .chat-input-area input {
+      padding: 10px 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .chat-input-area input:focus {
+      border-color: var(--primary);
+    }
+
+    .chat-send-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chat-send-row input {
+      flex: 1;
+    }
+
+    .chat-send-row button {
+      padding: 10px 16px;
+      font-size: 0.85rem;
+    }
+
+    /* Floating Chat Button (Mobile) */
+    .btn-chat-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(66, 85, 255, 0.3);
+      border: none;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      z-index: 1000;
+    }
+
+    @media (max-width: 850px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      .app-sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 300px;
+        height: 100vh;
+        z-index: 1001;
+        box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+        background: var(--bg);
+      }
+      .app-sidebar.show {
+        display: block;
+      }
+      .btn-chat-toggle {
+        display: flex;
+      }
+      .btn-close-chat {
+        display: block !important;
+      }
     }
 
     header {
@@ -534,7 +711,8 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="app-container">
+    <div class="app-main">
     <header>
       <div class="logo">
         Tư tưởng HCM
@@ -707,6 +885,27 @@
       </div>
     </div>
   </div>
+
+  <div class="app-sidebar" id="appSidebar">
+    <div class="card chat-panel">
+      <div class="chat-header">
+        <button type="button" class="btn-close-chat" id="btnCloseChat" style="display:none; float: right; border:none; background:none; font-size:1.2rem; cursor:pointer; color:var(--muted);">&times;</button>
+        <h3>💬 Kênh Chat Thế Giới</h3>
+        <span class="chat-subtitle">100 tin nhắn gần nhất</span>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <form class="chat-input-area" id="chatForm">
+        <input type="text" id="chatInputName" placeholder="Tên của bạn..." required />
+        <div class="chat-send-row">
+          <input type="text" id="chatInputMessage" placeholder="Nhập tin nhắn..." required autocomplete="off" />
+          <button type="submit" class="btn-primary" id="btnSendChat">Gửi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<button type="button" class="btn-chat-toggle" id="btnChatToggle" title="Mở kênh chat">💬</button>
 
   <script src="hcm_data.js"></script>
   <script>
@@ -1428,6 +1627,108 @@
     // Ping immediately and then every 20 seconds
     pingActiveStatus();
     setInterval(pingActiveStatus, 20000);
+
+    // -------------------------------------------------------------
+    // CHAT SYSTEM LOGIC
+    // -------------------------------------------------------------
+    const btnChatToggle = $("btnChatToggle");
+    const appSidebar = $("appSidebar");
+    const btnCloseChat = $("btnCloseChat");
+    const chatInputName = $("chatInputName");
+
+    btnChatToggle.addEventListener("click", () => {
+      appSidebar.classList.toggle("show");
+    });
+    btnCloseChat.addEventListener("click", () => {
+      appSidebar.classList.remove("show");
+    });
+
+    // Save and load nickname
+    const savedName = localStorage.getItem("hcm-chat-nickname");
+    if (savedName) {
+      chatInputName.value = savedName;
+    }
+    chatInputName.addEventListener("change", () => {
+      localStorage.setItem("hcm-chat-nickname", chatInputName.value.trim());
+    });
+
+    let lastFetchedMessageCount = 0;
+
+    async function fetchChatMessages() {
+      // Don't poll if the tab is inactive to save Redis command limits!
+      if (document.visibilityState === "hidden") return;
+
+      try {
+        const res = await fetch("/api/chat");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.messages) {
+            renderChatMessages(data.messages);
+          }
+        }
+      } catch (err) {
+        console.warn("Lỗi tải tin nhắn:", err);
+      }
+    }
+
+    function renderChatMessages(messages) {
+      const container = $("chatMessages");
+      const currentScroll = container.scrollTop;
+      const isNearBottom = container.scrollHeight - container.clientHeight - currentScroll < 60;
+
+      container.innerHTML = "";
+      const myName = chatInputName.value.trim();
+
+      messages.forEach(msg => {
+        const isMe = msg.sender === myName && myName !== "";
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `chat-msg ${isMe ? "me" : "other"}`;
+
+        const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        msgDiv.innerHTML = `
+          <span class="chat-msg-sender">${escapeHtml(msg.sender)}</span>
+          <span class="chat-msg-text">${escapeHtml(msg.text)}</span>
+          <span class="chat-msg-time">${timeStr}</span>
+        `;
+        container.appendChild(msgDiv);
+      });
+
+      if (isNearBottom || lastFetchedMessageCount !== messages.length) {
+        container.scrollTop = container.scrollHeight;
+      }
+      lastFetchedMessageCount = messages.length;
+    }
+
+    $("chatForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = chatInputName.value.trim();
+      const message = $("chatInputMessage").value.trim();
+
+      if (!name || !message) return;
+
+      $("chatInputMessage").value = "";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, message })
+        });
+
+        if (res.ok) {
+          fetchChatMessages();
+        }
+      } catch (err) {
+        console.warn("Lỗi gửi tin nhắn:", err);
+      }
+    });
+
+    // Start chat loop: fetch immediately and then every 4 seconds when active
+    fetchChatMessages();
+    setInterval(fetchChatMessages, 4000);
   </script>
 </body>
 </html>
