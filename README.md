@@ -7,7 +7,7 @@ Dự án này bao gồm ứng dụng web ôn trắc nghiệm môn **Tư tưởng
 ## 🚀 Tính năng chính
 
 ### 1. 📝 Ôn thi trắc nghiệm HCM202 (Quizlet Style)
-* File chính: [hcm-quiz.html](file:///d:/AntiGravity/HCM202/hcm-quiz.html)
+* File chính: [index.html](file:///d:/AntiGravity/HCM202/index.html)
 * **Giao diện hiện đại**: Thiết kế tối giản, trực quan, hỗ trợ cả giao diện Sáng (Light Mode) và Tối (Dark Mode).
 * **Câu hỏi phong phú**: Bộ dữ liệu câu hỏi được trích xuất trực tiếp từ ngân hàng đề thi.
 * **Tương tác trực quan**: 
@@ -20,7 +20,7 @@ Dự án này bao gồm ứng dụng web ôn trắc nghiệm môn **Tư tưởng
 * **Phần tích dữ liệu câu hỏi**: [parse_hcm.py](file:///d:/AntiGravity/HCM202/parse_hcm.py) – Đọc file `hcm_raw.txt`, tự động gom cụm câu hỏi, các tùy chọn A-B-C-D cùng đáp án đúng, sau đó chuẩn hóa và lưu thành định dạng JSON [hcm_questions.json](file:///d:/AntiGravity/HCM202/hcm_questions.json).
 
 ### 3. 🖥️ Các trang Giao diện Clone khác
-* **LinkedIn Clone**: [index.html](file:///d:/AntiGravity/HCM202/index.html) – Trang giao diện thiết kế theo phong cách mạng xã hội nghề nghiệp LinkedIn.
+* **LinkedIn Clone**: [linkedin.html](file:///d:/AntiGravity/HCM202/linkedin.html) – Trang giao diện thiết kế theo phong cách mạng xã hội nghề nghiệp LinkedIn.
 * **GitHub Profile Clone**: [github.html](file:///d:/AntiGravity/HCM202/github.html) – Giao diện trang cá nhân GitHub (mock profile) hỗ trợ Dark/Light mode và cấu hình TailwindCSS.
 
 ---
@@ -32,11 +32,11 @@ HCM202/
 ├── .gitignore             # Danh sách bỏ qua các tệp tạm thời, cache của Python
 ├── README.md              # Tài liệu hướng dẫn dự án (này)
 │
-├── hcm-quiz.html          # Trang web trắc nghiệm ôn tập HCM202 (giao diện Quizlet)
+├── index.html             # Trang web trắc nghiệm ôn tập HCM202 (giao diện Quizlet)
 ├── hcm_data.js            # Chứa bộ dữ liệu câu hỏi dạng Javascript để nhúng vào trang web
 ├── hcm_questions.json     # Bộ câu hỏi đã được parse dưới dạng JSON sạch
 │
-├── index.html             # Bản clone giao diện LinkedIn
+├── linkedin.html          # Bản clone giao diện LinkedIn
 ├── github.html            # Bản clone giao diện cá nhân GitHub
 │
 ├── extract_hcm.py         # Script Python trích xuất văn bản từ hcm.docx
@@ -50,8 +50,8 @@ HCM202/
 
 ### 1. Xem giao diện trực tiếp trên trình duyệt
 Bạn chỉ cần mở trực tiếp các file `.html` bằng trình duyệt web của mình (hoặc sử dụng Extension Live Server trên VS Code để có trải nghiệm tốt nhất):
-* Nhấp đúp vào [hcm-quiz.html](file:///d:/AntiGravity/HCM202/hcm-quiz.html) để ôn tập trắc nghiệm.
-* Nhấp đúp vào [index.html](file:///d:/AntiGravity/HCM202/index.html) để xem giao diện LinkedIn Clone.
+* Nhấp đúp vào [index.html](file:///d:/AntiGravity/HCM202/index.html) để ôn tập trắc nghiệm.
+* Nhấp đúp vào [linkedin.html](file:///d:/AntiGravity/HCM202/linkedin.html) để xem giao diện LinkedIn Clone.
 * Nhấp đúp vào [github.html](file:///d:/AntiGravity/HCM202/github.html) để xem giao diện GitHub Clone.
 
 ### 2. Sử dụng công cụ trích xuất dữ liệu (Python)

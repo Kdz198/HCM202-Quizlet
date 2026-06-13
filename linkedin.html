@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkedIn</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --li-blue: #0a66c2;
+      --li-blue-hover: #004182;
+      --li-bg: #f3f2ef;
+      --li-white: #ffffff;
+      --li-border: #e0e0e0;
+      --li-text: rgba(0,0,0,.9);
+      --li-muted: rgba(0,0,0,.6);
+      --li-light: rgba(0,0,0,.45);
+      --li-green: #057642;
+      --li-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.08);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--li-bg);
+      color: var(--li-text);
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Header ── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--li-white);
+      border-bottom: 1px solid var(--li-border);
+      height: 52px;
+    }
+    .header-inner {
+      max-width: 1128px; margin: 0 auto;
+      display: flex; align-items: center;
+      padding: 0 16px; height: 100%; gap: 8px;
+    }
+    .logo { flex-shrink: 0; }
+    .logo svg { width: 34px; height: 34px; fill: var(--li-blue); }
+
+    .search-box {
+      flex: 0 1 280px;
+      display: flex; align-items: center; gap: 8px;
+      background: #eef3f8; border-radius: 4px;
+      padding: 6px 12px; margin-left: 4px;
+    }
+    .search-box svg { width: 16px; height: 16px; fill: var(--li-muted); flex-shrink: 0; }
+    .search-box input {
+      border: none; background: transparent; outline: none;
+      font-size: 14px; width: 100%; color: var(--li-text);
+    }
+
+    .nav-main { display: flex; margin-left: auto; }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 0 12px; height: 52px; min-width: 80px;
+      color: var(--li-muted); font-size: 12px; gap: 2px;
+      border-bottom: 2px solid transparent; transition: color .15s;
+    }
+    .nav-item:hover { color: var(--li-text); }
+    .nav-item.active { color: var(--li-text); border-bottom-color: var(--li-text); }
+    .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
+    .nav-item .badge {
+      position: relative;
+    }
+    .nav-item .badge::after {
+      content: attr(data-count);
+      position: absolute; top: -4px; right: -8px;
+      background: #cc1013; color: #fff;
+      font-size: 10px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 4px;
+    }
+
+    .nav-divider { width: 1px; height: 32px; background: var(--li-border); margin: 0 4px; align-self: center; }
+
+    .nav-me {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 8px; font-size: 12px; color: var(--li-muted); gap: 2px;
+    }
+    .nav-me img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+    .nav-me:hover { color: var(--li-text); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1128px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 225px minmax(0, 555px) 300px;
+      gap: 24px;
+      padding: 24px 16px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--li-white);
+      border-radius: var(--radius);
+      box-shadow: var(--li-shadow);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    /* ── Left sidebar ── */
+    .profile-card { text-align: center; position: relative; }
+    .profile-banner { height: 56px; background: linear-gradient(135deg, #0077b5, #0a66c2); }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--li-white);
+      margin: -36px auto 8px; object-fit: cover;
+    }
+    .profile-name { font-size: 16px; font-weight: 600; padding: 0 12px; }
+    .profile-name:hover { color: var(--li-blue); text-decoration: underline; cursor: pointer; }
+    .profile-title { font-size: 12px; color: var(--li-muted); padding: 4px 12px 12px; }
+
+    .stats-row {
+      display: flex; border-top: 1px solid var(--li-border);
+      padding: 12px; justify-content: space-between;
+    }
+    .stat { text-align: left; }
+    .stat-label { font-size: 11px; color: var(--li-muted); }
+    .stat-value { font-size: 13px; font-weight: 600; color: var(--li-blue); cursor: pointer; }
+    .stat-value:hover { text-decoration: underline; }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; font-size: 13px; font-weight: 600;
+      color: var(--li-muted); cursor: pointer;
+    }
+    .sidebar-link:hover { background: rgba(0,0,0,.04); color: var(--li-text); }
+    .sidebar-link svg { width: 20px; height: 20px; fill: currentColor; }
+
+    .premium-card {
+      padding: 12px; display: flex; gap: 8px; align-items: flex-start;
+    }
+    .premium-card svg { width: 24px; height: 24px; flex-shrink: 0; }
+    .premium-card p { font-size: 12px; color: var(--li-muted); }
+    .premium-card strong { display: block; font-size: 13px; color: var(--li-text); margin-bottom: 2px; }
+
+    .recent-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 12px; font-size: 13px; cursor: pointer;
+    }
+    .recent-item:hover { background: rgba(0,0,0,.04); }
+    .recent-item img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; }
+
+    /* ── Create post ── */
+    .create-post { padding: 12px 16px; }
+    .create-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .create-row img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+    .create-input {
+      flex: 1; border: 1px solid var(--li-border); border-radius: 24px;
+      padding: 12px 16px; font-size: 14px; color: var(--li-muted);
+      cursor: pointer; text-align: left;
+    }
+    .create-input:hover { background: rgba(0,0,0,.04); }
+    .create-actions { display: flex; justify-content: space-around; padding-top: 4px; }
+    .create-action {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 8px; border-radius: 4px;
+      font-size: 14px; font-weight: 600; color: var(--li-muted);
+    }
+    .create-action:hover { background: rgba(0,0,0,.04); }
+    .create-action svg { width: 24px; height: 24px; }
+
+    /* ── Sort bar ── */
+    .sort-bar {
+      display: flex; align-items: center; gap: 4px;
+      padding: 8px 16px; font-size: 12px; color: var(--li-muted);
+    }
+    .sort-bar hr { flex: 1; border: none; border-top: 1px solid var(--li-border); }
+
+    /* ── Post ── */
+    .post { padding-bottom: 0; }
+    .post-header {
+      display: flex; gap: 8px; padding: 12px 16px 0;
+    }
+    .post-header img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; cursor: pointer; }
+    .post-meta { flex: 1; min-width: 0; }
+    .post-author { font-size: 14px; font-weight: 600; cursor: pointer; }
+    .post-author:hover { color: var(--li-blue); text-decoration: underline; }
+    .post-subtitle { font-size: 12px; color: var(--li-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .post-time { font-size: 12px; color: var(--li-muted); display: flex; align-items: center; gap: 4px; }
+    .post-menu {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--li-muted); flex-shrink: 0;
+    }
+    .post-menu:hover { background: rgba(0,0,0,.08); }
+
+    .post-body { padding: 8px 16px 12px; font-size: 14px; line-height: 1.5; }
+    .post-body .see-more { color: var(--li-muted); font-weight: 600; cursor: pointer; }
+    .post-body .see-more:hover { color: var(--li-blue); text-decoration: underline; }
+
+    .post-image { width: 100%; max-height: 400px; object-fit: cover; cursor: pointer; }
+
+    .post-stats {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 16px; font-size: 12px; color: var(--li-muted);
+    }
+    .post-stats-left { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .post-stats-left:hover { color: var(--li-blue); text-decoration: underline; }
+    .reaction-icons { display: flex; }
+    .reaction-icons span {
+      width: 16px; height: 16px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; margin-left: -4px; border: 1px solid #fff;
+    }
+    .reaction-icons span:first-child { margin-left: 0; }
+    .ri-like { background: #378fe9; }
+    .ri-celebrate { background: #6dae4f; }
+    .ri-love { background: #df704d; }
+
+    .post-actions {
+      display: flex; border-top: 1px solid var(--li-border);
+      padding: 4px 8px;
+    }
+    .post-action {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
+      padding: 12px 8px; border-radius: 4px;
+      font-size: 14px; font-weight: 600; color: var(--li-muted);
+      position: relative;
+    }
+    .post-action:hover { background: rgba(0,0,0,.08); }
+    .post-action.active-like { color: var(--li-blue); }
+    .post-action svg { width: 20px; height: 20px; fill: currentColor; }
+
+    .comments-section {
+      padding: 0 16px 12px; display: none;
+    }
+    .comments-section.open { display: block; }
+    .comment-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .comment-input-row img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+    .comment-input-wrap { flex: 1; }
+    .comment-input {
+      width: 100%; border: 1px solid var(--li-border); border-radius: 24px;
+      padding: 8px 16px; font-size: 13px; outline: none;
+    }
+    .comment-input:focus { border-color: var(--li-blue); box-shadow: 0 0 0 1px var(--li-blue); }
+    .comment-item { display: flex; gap: 8px; margin-bottom: 12px; }
+    .comment-item img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .comment-bubble {
+      background: #f2f2f2; border-radius: 8px; padding: 8px 12px; flex: 1;
+    }
+    .comment-author { font-size: 13px; font-weight: 600; }
+    .comment-text { font-size: 13px; margin-top: 2px; }
+    .comment-actions { display: flex; gap: 12px; margin-top: 4px; padding-left: 12px; }
+    .comment-actions button { font-size: 11px; font-weight: 600; color: var(--li-muted); }
+    .comment-actions button:hover { color: var(--li-blue); }
+
+    /* ── Right sidebar ── */
+    .news-item {
+      display: flex; gap: 8px; padding: 8px 12px; cursor: pointer;
+    }
+    .news-item:hover { background: rgba(0,0,0,.04); }
+    .news-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--li-text); margin-top: 6px; flex-shrink: 0; }
+    .news-title { font-size: 13px; font-weight: 600; line-height: 1.3; }
+    .news-meta { font-size: 11px; color: var(--li-muted); margin-top: 2px; }
+
+    .suggestion-item {
+      display: flex; gap: 8px; padding: 8px 12px; align-items: flex-start;
+    }
+    .suggestion-item img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .suggestion-info { flex: 1; min-width: 0; }
+    .suggestion-name { font-size: 14px; font-weight: 600; cursor: pointer; }
+    .suggestion-name:hover { color: var(--li-blue); text-decoration: underline; }
+    .suggestion-desc { font-size: 12px; color: var(--li-muted); margin-top: 2px; }
+    .btn-follow {
+      margin-top: 8px; padding: 4px 16px;
+      border: 1px solid var(--li-blue); border-radius: 16px;
+      color: var(--li-blue); font-size: 14px; font-weight: 600;
+    }
+    .btn-follow:hover { background: #eef3f8; border-width: 2px; padding: 3px 15px; }
+    .btn-follow.following { background: transparent; border-color: var(--li-muted); color: var(--li-muted); }
+    .btn-dismiss {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--li-muted); flex-shrink: 0;
+    }
+    .btn-dismiss:hover { background: rgba(0,0,0,.08); }
+
+    .card-footer-link {
+      display: block; text-align: center; padding: 12px;
+      font-size: 14px; font-weight: 600; color: var(--li-muted);
+      border-top: 1px solid var(--li-border); cursor: pointer;
+    }
+    .card-footer-link:hover { background: rgba(0,0,0,.04); color: var(--li-text); }
+
+    .card-title {
+      padding: 12px 12px 4px; font-size: 16px; font-weight: 600;
+    }
+
+    .footer-links {
+      padding: 12px; font-size: 12px; color: var(--li-muted);
+      display: flex; flex-wrap: wrap; gap: 4px 8px;
+    }
+    .footer-links a:hover { color: var(--li-blue); text-decoration: underline; }
+    .footer-copy { padding: 0 12px 12px; font-size: 12px; color: var(--li-muted); display: flex; align-items: center; gap: 4px; }
+    .footer-copy svg { width: 56px; fill: var(--li-muted); }
+
+    /* ── Modals / Toasts ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.6); z-index: 200;
+      align-items: flex-start; justify-content: center; padding-top: 60px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--li-white); border-radius: var(--radius);
+      width: 552px; max-width: 95vw; box-shadow: 0 12px 48px rgba(0,0,0,.25);
+      animation: modalIn .2s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: none; } }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--li-border);
+    }
+    .modal-header h2 { font-size: 20px; font-weight: 600; }
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--li-muted); font-size: 24px;
+    }
+    .modal-close:hover { background: rgba(0,0,0,.08); }
+    .modal-body { padding: 16px 20px; }
+    .modal-body textarea {
+      width: 100%; min-height: 120px; border: none; outline: none;
+      font-size: 16px; resize: none; font-family: inherit;
+    }
+    .modal-footer {
+      display: flex; justify-content: flex-end; gap: 8px;
+      padding: 12px 20px; border-top: 1px solid var(--li-border);
+    }
+    .btn-primary {
+      background: var(--li-blue); color: #fff;
+      padding: 6px 16px; border-radius: 16px;
+      font-size: 16px; font-weight: 600;
+    }
+    .btn-primary:hover { background: var(--li-blue-hover); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #323232; color: #fff; padding: 12px 24px; border-radius: 4px;
+      font-size: 14px; z-index: 300; transition: transform .3s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .dropdown-menu {
+      display: none; position: absolute; top: 100%; right: 0;
+      background: var(--li-white); border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15); min-width: 200px; z-index: 50;
+      padding: 4px 0;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-item {
+      display: block; width: 100%; text-align: left;
+      padding: 10px 16px; font-size: 14px; color: var(--li-text);
+    }
+    .dropdown-item:hover { background: rgba(0,0,0,.04); }
+    .dropdown-item.danger { color: #cc1013; }
+
+    /* ── Responsive ── */
+    @media (max-width: 960px) {
+      .container { grid-template-columns: 1fr; max-width: 555px; }
+      .sidebar-left, .sidebar-right { display: none; }
+      .nav-item span { display: none; }
+      .nav-item { min-width: 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#" onclick="showToast('LinkedIn Home'); return false;">
+      <svg viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h3v1.76a3.11 3.11 0 012.7-1.5c1.55 0 3.36.86 3.36 3.91z"/></svg>
+    </a>
+    <div class="search-box">
+      <svg viewBox="0 0 16 16"><path d="M13.5 12.5l-3.5-3.5a5 5 0 10-.7.7l3.5 3.5zM8 3a5 5 0 110 10A5 5 0 018 3z"/></svg>
+      <input type="text" placeholder="Tìm kiếm" id="searchInput" onkeydown="if(event.key==='Enter') showToast('Tìm kiếm: '+this.value)" />
+    </div>
+    <nav class="nav-main">
+      <button class="nav-item active" data-nav="home" onclick="setNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M23 9v2h-2v7a3 3 0 01-3 3h-4v-6h-4v6H6a3 3 0 01-3-3v-7H1V9l11-7z"/></svg>
+        <span>Trang chủ</span>
+      </button>
+      <button class="nav-item" data-nav="network" onclick="setNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M12 16v6H3v-6a3 3 0 013-3h3a3 3 0 013 3zm5.5-3A3.5 3.5 0 0014 9.5V3h4v6.5zM16 3h4v6.5a3.5 3.5 0 00-3.5-3.5zM2 9.5A3.5 3.5 0 005.5 13H2V9.5zM13.5 3a3.5 3.5 0 013.5 3.5V13h-3.5a3.5 3.5 0 010-7z"/></svg>
+        <span>Mạng lưới</span>
+      </button>
+      <button class="nav-item" data-nav="jobs" onclick="setNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M20 7h-4V5a3 3 0 00-3-3h-2a3 3 0 00-3 3v2H4a1 1 0 00-1 1v11a3 3 0 003 3h12a3 3 0 003-3V8a1 1 0 00-1-1zM9 5a1 1 0 011-1h2a1 1 0 011 1v2H9V5z"/></svg>
+        <span>Việc làm</span>
+      </button>
+      <button class="nav-item" data-nav="messaging" onclick="setNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5a3 3 0 00-3 3v11a3 3 0 003 3h14a3 3 0 003-3V6a3 3 0 00-3-3zm-2 9l-5 3-5-3V8l5 3 5-3z"/></svg>
+        <span>Tin nhắn</span>
+      </button>
+      <button class="nav-item" data-nav="notifications" onclick="setNav(this)">
+        <span class="badge" data-count="3"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h16a1 1 0 00.707-1.707L20 11.586V8a6 6 0 00-6-6zM10 21a2 2 0 004 0"/></svg></span>
+        <span>Thông báo</span>
+      </button>
+      <div class="nav-divider"></div>
+      <button class="nav-me" onclick="showToast('Hồ sơ của bạn')">
+        <img src="https://i.pravatar.cc/48?u=me" alt="Me" />
+        <span>Tôi ▾</span>
+      </button>
+      <button class="nav-item" data-nav="business" onclick="setNav(this)" style="min-width:100px">
+        <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z"/></svg>
+        <span>Dành cho doanh nghiệp ▾</span>
+      </button>
+      <button class="nav-item" data-nav="premium" onclick="setNav(this)" style="color:#915907;min-width:80px">
+        <span style="font-size:14px">⭐</span>
+        <span style="color:#915907">Premium</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Main -->
+<div class="container">
+  <!-- Left Sidebar -->
+  <aside class="sidebar-left">
+    <div class="card profile-card">
+      <div class="profile-banner"></div>
+      <img class="profile-avatar" src="https://i.pravatar.cc/144?u=me" alt="Avatar" onclick="showToast('Xem hồ sơ của bạn')" />
+      <div class="profile-name" onclick="showToast('Xem hồ sơ của bạn')">Nguyễn Minh Tuấn</div>
+      <div class="profile-title">Full-stack Developer · Ho Chi Minh City</div>
+      <div class="stats-row">
+        <div class="stat" onclick="showToast('Xem lượt xem hồ sơ')">
+          <div class="stat-label">Lượt xem hồ sơ</div>
+          <div class="stat-value">128</div>
+        </div>
+        <div class="stat" onclick="showToast('Xem lượt hiển thị bài viết')">
+          <div class="stat-label">Lượt hiển thị bài viết</div>
+          <div class="stat-value">2,451</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sidebar-link" onclick="showToast('Mục đã lưu')">
+        <svg viewBox="0 0 24 24"><path d="M17 3H7a2 2 0 00-2 2v16l7-3 7 3V5a2 2 0 00-2-2z"/></svg>
+        Mục đã lưu
+      </div>
+    </div>
+    <div class="card premium-card" onclick="showToast('Thử Premium miễn phí 1 tháng')">
+      <span style="font-size:24px">⭐</span>
+      <div>
+        <strong>Thử Premium miễn phí 1 tháng</strong>
+        <p>Trải nghiệm các công cụ nghề nghiệp và thông tin chi tiết hơn</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sidebar-link" style="font-size:12px;color:var(--li-light)" onclick="showToast('Nhóm của bạn')">Nhóm</div>
+      <div class="recent-item" onclick="showToast('React Developers Vietnam')">
+        <img src="https://i.pravatar.cc/48?u=react" alt="" />
+        React Developers Vietnam
+      </div>
+      <div class="recent-item" onclick="showToast('Startup Việt Nam')">
+        <img src="https://i.pravatar.cc/48?u=startup" alt="" />
+        Startup Việt Nam
+      </div>
+      <div class="recent-item" onclick="showToast('AI & Machine Learning VN')">
+        <img src="https://i.pravatar.cc/48?u=ai" alt="" />
+        AI & Machine Learning VN
+      </div>
+    </div>
+  </aside>
+
+  <!-- Feed -->
+  <main class="feed" id="feed">
+    <!-- Create Post -->
+    <div class="card create-post">
+      <div class="create-row">
+        <img src="https://i.pravatar.cc/96?u=me" alt="Me" />
+        <button class="create-input" onclick="openCreateModal()">Bắt đầu bài viết</button>
+      </div>
+      <div class="create-actions">
+        <button class="create-action" onclick="openCreateModal('video')">
+          <svg viewBox="0 0 24 24" fill="#5f9b41"><path d="M19 4H5a3 3 0 00-3 3v10a3 3 0 003 3h14a3 3 0 003-3V7a3 3 0 00-3-3zm-8 10V8l6 3-6 3z"/></svg>
+          Video
+        </button>
+        <button class="create-action" onclick="openCreateModal('photo')">
+          <svg viewBox="0 0 24 24" fill="#70b5f9"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-3 14H8l2.5-3.5L13 15l2-3 2 5z"/></svg>
+          Ảnh
+        </button>
+        <button class="create-action" onclick="showToast('Viết bài')">
+          <svg viewBox="0 0 24 24" fill="#e7a33e"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM8 13h8v2H8v-2zm0 4h5v2H8v-2z"/></svg>
+          Viết bài
+        </button>
+      </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="sort-bar">
+      <hr /><span>Sắp xếp theo: <strong style="cursor:pointer" onclick="showToast('Sắp xếp theo: Mới nhất')">Mới nhất ▾</strong></span>
+    </div>
+
+    <!-- Posts rendered by JS -->
+    <div id="postsContainer"></div>
+  </main>
+
+  <!-- Right Sidebar -->
+  <aside class="sidebar-right">
+    <div class="card">
+      <div class="card-title">LinkedIn News</div>
+      <div class="news-item" onclick="showToast('Đọc tin: AI thay đổi thị trường lao động')">
+        <div class="news-dot"></div>
+        <div><div class="news-title">AI thay đổi thị trường lao động Việt Nam</div><div class="news-meta">2 giờ trước · 12,453 readers</div></div>
+      </div>
+      <div class="news-item" onclick="showToast('Đọc tin: Startup gọi vốn Series B')">
+        <div class="news-dot"></div>
+        <div><div class="news-title">Startup Việt gọi vốn Series B $50M</div><div class="news-meta">4 giờ trước · 8,721 readers</div></div>
+      </div>
+      <div class="news-item" onclick="showToast('Đọc tin: Remote work trends')">
+        <div class="news-dot"></div>
+        <div><div class="news-title">Xu hướng làm việc remote năm 2026</div><div class="news-meta">6 giờ trước · 15,302 readers</div></div>
+      </div>
+      <div class="news-item" onclick="showToast('Đọc tin: Tech layoffs')">
+        <div class="news-dot"></div>
+        <div><div class="news-title">Big Tech cắt giảm nhân sự: Phân tích</div><div class="news-meta">8 giờ trước · 22,109 readers</div></div>
+      </div>
+      <div class="news-item" onclick="showToast('Đọc tin: Green energy jobs')">
+        <div class="news-dot"></div>
+        <div><div class="news-title">Việc làm năng lượng xanh tăng 40%</div><div class="news-meta">10 giờ trước · 5,678 readers</div></div>
+      </div>
+      <button class="card-footer-link" onclick="showToast('Xem thêm tin tức')">Hiển thị thêm</button>
+    </div>
+
+    <div class="card" id="suggestionsCard">
+      <div class="card-title">Gợi ý theo dõi</div>
+      <div id="suggestionsList"></div>
+      <button class="card-footer-link" onclick="showToast('Xem tất cả gợi ý')">Xem tất cả</button>
+    </div>
+
+    <div class="footer-links">
+      <a href="#" onclick="showToast('Giới thiệu');return false">Giới thiệu</a>
+      <a href="#" onclick="showToast('Trợ giúp');return false">Trợ giúp</a>
+      <a href="#" onclick="showToast('Quyền riêng tư');return false">Quyền riêng tư</a>
+      <a href="#" onclick="showToast('Điều khoản');return false">Điều khoản</a>
+      <a href="#" onclick="showToast('Quảng cáo');return false">Quảng cáo</a>
+      <a href="#" onclick="showToast('Doanh nghiệp');return false">Doanh nghiệp</a>
+    </div>
+    <div class="footer-copy">
+      <svg viewBox="0 0 84 21"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h3v1.76a3.11 3.11 0 012.7-1.5c1.55 0 3.36.86 3.36 3.91z"/></svg>
+      LinkedIn Corporation © 2026
+    </div>
+  </aside>
+</div>
+
+<!-- Create Post Modal -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Tạo bài viết</h2>
+      <button class="modal-close" onclick="closeCreateModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+        <img src="https://i.pravatar.cc/48?u=me" style="width:48px;height:48px;border-radius:50%" alt="" />
+        <div>
+          <div style="font-weight:600">Nguyễn Minh Tuấn</div>
+          <div style="font-size:12px;color:var(--li-muted)">Bài viết công khai ▾</div>
+        </div>
+      </div>
+      <textarea id="createTextarea" placeholder="Bạn đang nghĩ gì?" oninput="togglePostBtn()"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="postBtn" disabled onclick="submitPost()">Đăng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Chia sẻ bài viết</h2>
+      <button class="modal-close" onclick="closeShareModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <textarea id="shareTextarea" placeholder="Thêm suy nghĩ của bạn..."></textarea>
+      <div id="sharePreview" style="margin-top:12px;padding:12px;border:1px solid var(--li-border);border-radius:8px;font-size:13px;color:var(--li-muted)"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" onclick="submitShare()">Đăng lại</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Mock Data ──
+const POSTS = [
+  {
+    id: 1,
+    author: "Trần Thị Hương",
+    avatar: "https://i.pravatar.cc/96?u=huong",
+    title: "Senior Product Manager tại VNG Corporation",
+    time: "2 giờ",
+    content: "Hôm nay team chúng tôi vừa launch tính năng mới trên ZaloPay 🚀 Sau 6 tháng research và development, cuối cùng cũng đến ngày release. Cảm ơn tất cả mọi người đã đồng hành!\n\n#ProductManagement #Fintech #VNG",
+    image: "https://picsum.photos/seed/zalopay/555/300",
+    likes: 342, comments: 28, reposts: 12,
+    liked: false,
+    sampleComments: [
+      { author: "Lê Văn Đức", avatar: "https://i.pravatar.cc/48?u=duc", text: "Chúc mừng team! Tính năng này rất cần thiết 👏" },
+      { author: "Phạm Minh Anh", avatar: "https://i.pravatar.cc/48?u=anh", text: "Impressive work! Can't wait to try it." }
+    ]
+  },
+  {
+    id: 2,
+    author: "Google Vietnam",
+    avatar: "https://i.pravatar.cc/96?u=google",
+    title: "Công ty công nghệ · 2.5M followers",
+    time: "4 giờ",
+    content: "We're hiring! 🎯 Google Vietnam đang tìm kiếm Software Engineers cho team Cloud Platform. Yêu cầu: 3+ năm kinh nghiệm, thành thạo Go/Python, có kinh nghiệm với Kubernetes.\n\nApply ngay tại careers.google.com",
+    image: null,
+    likes: 891, comments: 156, reposts: 234,
+    liked: false,
+    sampleComments: [
+      { author: "Nguyễn Minh Tuấn", avatar: "https://i.pravatar.cc/48?u=me", text: "Vị trí này có hỗ trợ remote không ạ?" }
+    ]
+  },
+  {
+    id: 3,
+    author: "Đỗ Quang Huy",
+    avatar: "https://i.pravatar.cc/96?u=huy",
+    title: "Tech Lead · FPT Software",
+    time: "5 giờ",
+    content: "5 bài học sau 10 năm làm lập trình viên:\n\n1. Code sạch quan trọng hơn code nhanh\n2. Communication > Technical skills\n3. Học cách nói \"không\" với scope creep\n4. Document everything\n5. Health > Career (seriously)\n\nBạn đồng ý với điểm nào nhất?",
+    image: null,
+    likes: 1247, comments: 89, reposts: 67,
+    liked: true,
+    sampleComments: [
+      { author: "Vũ Thị Lan", avatar: "https://i.pravatar.cc/48?u=lan", text: "Điểm số 2 quá đúng! Mình từng bị burnout vì không biết communicate." },
+      { author: "Hoàng Nam", avatar: "https://i.pravatar.cc/48?u=nam", text: "Thêm điểm 6: Always be learning 📚" }
+    ]
+  },
+  {
+    id: 4,
+    author: "Harvard Business Review",
+    avatar: "https://i.pravatar.cc/96?u=hbr",
+    title: "Tạp chí kinh doanh · 14M followers",
+    time: "6 giờ",
+    content: "New research shows that companies with strong mentorship programs see 50% higher employee retention rates. The key? Structured programs with clear goals, not just informal coffee chats.\n\nRead the full article →",
+    image: "https://picsum.photos/seed/mentorship/555/300",
+    likes: 3421, comments: 201, reposts: 890,
+    liked: false,
+    sampleComments: []
+  },
+  {
+    id: 5,
+    author: "Nguyễn Thảo My",
+    avatar: "https://i.pravatar.cc/96?u=thao",
+    title: "UX Designer · Tiki",
+    time: "8 giờ",
+    content: "Just finished redesigning the checkout flow for Tiki app ✨ Giảm 23% cart abandonment rate sau A/B testing. Design is not just how it looks — it's how it works.\n\nSwipe để xem before/after 👉",
+    image: "https://picsum.photos/seed/uxdesign/555/300",
+    likes: 567, comments: 45, reposts: 23,
+    liked: false,
+    sampleComments: [
+      { author: "Trần Thị Hương", avatar: "https://i.pravatar.cc/48?u=huong", text: "Kết quả ấn tượng! Share thêm về process được không?" }
+    ]
+  },
+  {
+    id: 6,
+    author: "Microsoft",
+    avatar: "https://i.pravatar.cc/96?u=ms",
+    title: "Công ty công nghệ · 22M followers",
+    time: "10 giờ",
+    content: "Introducing Copilot for Teams — AI-powered meeting summaries, action items, and real-time translation in 40+ languages. Available now for Microsoft 365 subscribers.\n\n#Microsoft #AI #Copilot",
+    image: "https://picsum.photos/seed/copilot/555/300",
+    likes: 5678, comments: 432, reposts: 1234,
+    liked: false,
+    sampleComments: []
+  },
+  {
+    id: 7,
+    author: "Lê Hoàng Phúc",
+    avatar: "https://i.pravatar.cc/96?u=phuc",
+    title: "Founder & CEO · TechStart VN",
+    time: "12 giờ",
+    content: "Startup journey update 📊\n\nTháng 6/2026:\n✅ 10,000 users\n✅ $50K MRR\n✅ Team 15 người\n❌ Chưa profitable (nhưng đang đi đúng hướng)\n\nCảm ơn tất cả investors và early users đã tin tưởng chúng tôi từ ngày đầu. Series A coming soon!",
+    image: null,
+    likes: 892, comments: 67, reposts: 45,
+    liked: false,
+    sampleComments: [
+      { author: "Đỗ Quang Huy", avatar: "https://i.pravatar.cc/48?u=huy", text: "Congrats Phúc! Nhớ ngày mình cùng hackathon không 😄" }
+    ]
+  },
+  {
+    id: 8,
+    author: "Coursera",
+    avatar: "https://i.pravatar.cc/96?u=coursera",
+    title: "E-learning Platform · 5M followers",
+    time: "14 giờ",
+    content: "🎓 Free courses this week:\n\n• Machine Learning Specialization - Stanford\n• Google Data Analytics Certificate\n• Meta Front-End Developer\n\nUpskill yourself — enrollment is free until June 15!",
+    image: null,
+    likes: 2341, comments: 178, reposts: 567,
+    liked: false,
+    sampleComments: [
+      { author: "Phạm Minh Anh", avatar: "https://i.pravatar.cc/48?u=anh", text: "Enrolled! Thanks for sharing 🙏" }
+    ]
+  },
+  {
+    id: 9,
+    author: "Vũ Thị Lan",
+    avatar: "https://i.pravatar.cc/96?u=lan2",
+    title: "Data Scientist · MoMo",
+    time: "16 giờ",
+    content: "Chia sẻ notebook phân tích customer churn cho fintech startup 🐍\n\nStack: Python, Pandas, Scikit-learn, SHAP for explainability\n\nLink GitHub trong comment. Hope it helps fellow data folks!",
+    image: "https://picsum.photos/seed/datasci/555/300",
+    likes: 445, comments: 34, reposts: 89,
+    liked: false,
+    sampleComments: [
+      { author: "Lê Văn Đức", avatar: "https://i.pravatar.cc/48?u=duc", text: "SHAP explainability section rất hay!" }
+    ]
+  },
+  {
+    id: 10,
+    author: "Satya Nadella",
+    avatar: "https://i.pravatar.cc/96?u=satya",
+    title: "Chairman & CEO · Microsoft",
+    time: "1 ngày",
+    content: "The next decade will be defined by how we harness AI to empower every person and organization on the planet to achieve more. At Microsoft, we're committed to building AI that is responsible, inclusive, and accessible to all.\n\nExcited for what lies ahead. 🌍",
+    image: "https://picsum.photos/seed/ai-future/555/300",
+    likes: 45230, comments: 1890, reposts: 8900,
+    liked: false,
+    sampleComments: [
+      { author: "Google Vietnam", avatar: "https://i.pravatar.cc/48?u=google", text: "Well said. The industry needs this kind of leadership." }
+    ]
+  }
+];
+
+const SUGGESTIONS = [
+  { id: 1, name: "Grab Vietnam", desc: "Công ty công nghệ · 500K+ followers", avatar: "https://i.pravatar.cc/96?u=grab" },
+  { id: 2, name: "Shopee Vietnam", desc: "Thương mại điện tử · 1M+ followers", avatar: "https://i.pravatar.cc/96?u=shopee" },
+  { id: 3, name: "Nguyễn Hà My", desc: "Engineering Manager · Sendo", avatar: "https://i.pravatar.cc/96?u=hamy" }
+];
+
+// ── State ──
+let sharePostId = null;
+let expandedPosts = {};
+
+// ── Render Posts ──
+function formatNumber(n) {
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n;
+}
+
+function truncateText(text, maxLen = 200) {
+  if (text.length <= maxLen) return { text, truncated: false };
+  return { text: text.slice(0, maxLen), truncated: true };
+}
+
+function renderPosts() {
+  const container = document.getElementById('postsContainer');
+  container.innerHTML = POSTS.map(post => {
+    const isExpanded = expandedPosts[post.id];
+    const { text, truncated } = truncateText(post.content);
+    const displayText = isExpanded ? post.content : text;
+    const showSeeMore = truncated && !isExpanded;
+
+    return `
+    <div class="card post" data-id="${post.id}">
+      <div class="post-header">
+        <img src="${post.avatar}" alt="${post.author}" onclick="showToast('Xem hồ sơ: ${post.author}')" />
+        <div class="post-meta">
+          <div class="post-author" onclick="showToast('Xem hồ sơ: ${post.author}')">${post.author}</div>
+          <div class="post-subtitle">${post.title}</div>
+          <div class="post-time">${post.time} · 🌐</div>
+        </div>
+        <div style="position:relative">
+          <button class="post-menu" onclick="toggleDropdown(event, ${post.id})">•••</button>
+          <div class="dropdown-menu" id="dropdown-${post.id}">
+            <button class="dropdown-item" onclick="showToast('Đã lưu bài viết');closeDropdowns()">🔖 Lưu bài viết</button>
+            <button class="dropdown-item" onclick="showToast('Link đã sao chép');closeDropdowns()">🔗 Sao chép link</button>
+            <button class="dropdown-item" onclick="showToast('Báo cáo bài viết');closeDropdowns()">🚩 Báo cáo</button>
+            <button class="dropdown-item danger" onclick="showToast('Đã ẩn bài viết');hidePost(${post.id})">✕ Ẩn bài viết</button>
+          </div>
+        </div>
+      </div>
+      <div class="post-body">
+        ${displayText.replace(/\n/g, '<br>')}
+        ${showSeeMore ? `<span class="see-more" onclick="expandPost(${post.id})">...xem thêm</span>` : ''}
+      </div>
+      ${post.image ? `<img class="post-image" src="${post.image}" alt="" onclick="showToast('Xem ảnh')" />` : ''}
+      <div class="post-stats">
+        <div class="post-stats-left" onclick="showToast('${formatNumber(post.likes)} lượt thích')">
+          <div class="reaction-icons">
+            <span class="ri-like">👍</span>
+            <span class="ri-celebrate">👏</span>
+            <span class="ri-love">❤️</span>
+          </div>
+          ${formatNumber(post.likes)}
+        </div>
+        <div>
+          <span style="cursor:pointer" onclick="toggleComments(${post.id})">${post.comments} bình luận</span>
+          · <span style="cursor:pointer" onclick="showToast('${post.reposts} lượt đăng lại')">${post.reposts} lượt đăng lại</span>
+        </div>
+      </div>
+      <div class="post-actions">
+        <button class="post-action ${post.liked ? 'active-like' : ''}" id="like-btn-${post.id}" onclick="toggleLike(${post.id})">
+          <svg viewBox="0 0 24 24"><path d="M19.46 11l-3.91-3.91a7 7 0 10-9.8 9.8l.1.1 3.91 3.91 9.8-9.8zM12 20.12l-1.45-1.45C5.4 15.24 2 12.28 2 8.5A5.5 5.5 0 017.5 3c1.74 0 3.41.81 4.5 2.09A5.5 5.5 0 0116.5 3 5.5 5.5 0 0122 8.5c0 3.78-3.4 6.74-8.55 10.67L12 20.12z"/></svg>
+          Thích
+        </button>
+        <button class="post-action" onclick="toggleComments(${post.id})">
+          <svg viewBox="0 0 24 24"><path d="M7 9h10v1H7zm0 4h7v1H7zm4.5 9.5L12 20l-1.5 1.5L9 20l-1.5 1.5L6 20l-1.5 1.5L3 20V4a1 1 0 011-1h16a1 1 0 011 1v12.5z"/></svg>
+          Bình luận
+        </button>
+        <button class="post-action" onclick="openShareModal(${post.id})">
+          <svg viewBox="0 0 24 24"><path d="M16 4l4 4-4 4V9h-3a4 4 0 00-4 4v3l-4-4 4-4v3a6 6 0 016-6h3V4zM2 18V6a1 1 0 011-1h2v2H4v10h10v-1h2v2a1 1 0 01-1 1H3a1 1 0 01-1-1z"/></svg>
+          Đăng lại
+        </button>
+        <button class="post-action" onclick="showToast('Đã gửi bài viết qua tin nhắn')">
+          <svg viewBox="0 0 24 24"><path d="M21 3L0 10l7.66 4.26L16 8l-6.26 7.34L14 24l7-21z"/></svg>
+          Gửi
+        </button>
+      </div>
+      <div class="comments-section" id="comments-${post.id}">
+        <div class="comment-input-row">
+          <img src="https://i.pravatar.cc/48?u=me" alt="" />
+          <div class="comment-input-wrap">
+            <input class="comment-input" placeholder="Thêm bình luận..." id="comment-input-${post.id}"
+              onkeydown="if(event.key==='Enter')addComment(${post.id})" />
+          </div>
+        </div>
+        ${post.sampleComments.map(c => `
+          <div class="comment-item">
+            <img src="${c.avatar}" alt="" />
+            <div>
+              <div class="comment-bubble">
+                <div class="comment-author">${c.author}</div>
+                <div class="comment-text">${c.text}</div>
+              </div>
+              <div class="comment-actions">
+                <button onclick="showToast('Đã thích bình luận')">Thích</button>
+                <button onclick="document.getElementById('comment-input-${post.id}').focus()">Trả lời</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSuggestions() {
+  document.getElementById('suggestionsList').innerHTML = SUGGESTIONS.map(s => `
+    <div class="suggestion-item" id="suggestion-${s.id}">
+      <img src="${s.avatar}" alt="" />
+      <div class="suggestion-info">
+        <div class="suggestion-name" onclick="showToast('Xem trang: ${s.name}')">${s.name}</div>
+        <div class="suggestion-desc">${s.desc}</div>
+        <button class="btn-follow" id="follow-btn-${s.id}" onclick="toggleFollow(${s.id}, '${s.name}')">+ Theo dõi</button>
+      </div>
+      <button class="btn-dismiss" onclick="dismissSuggestion(${s.id})">×</button>
+    </div>
+  `).join('');
+}
+
+// ── Interactions ──
+function toggleLike(id) {
+  const post = POSTS.find(p => p.id === id);
+  if (!post) return;
+  post.liked = !post.liked;
+  post.likes += post.liked ? 1 : -1;
+  renderPosts();
+  showToast(post.liked ? 'Bạn đã thích bài viết này' : 'Đã bỏ thích');
+}
+
+function toggleComments(id) {
+  const el = document.getElementById('comments-' + id);
+  if (el) {
+    el.classList.toggle('open');
+    if (el.classList.contains('open')) {
+      document.getElementById('comment-input-' + id)?.focus();
+    }
+  }
+}
+
+function addComment(id) {
+  const input = document.getElementById('comment-input-' + id);
+  const text = input.value.trim();
+  if (!text) return;
+  const post = POSTS.find(p => p.id === id);
+  if (post) {
+    post.sampleComments.unshift({ author: 'Nguyễn Minh Tuấn', avatar: 'https://i.pravatar.cc/48?u=me', text });
+    post.comments++;
+    renderPosts();
+    toggleComments(id);
+    showToast('Bình luận đã được đăng');
+  }
+}
+
+function expandPost(id) {
+  expandedPosts[id] = true;
+  renderPosts();
+}
+
+function hidePost(id) {
+  const idx = POSTS.findIndex(p => p.id === id);
+  if (idx > -1) {
+    POSTS.splice(idx, 1);
+    renderPosts();
+    closeDropdowns();
+    showToast('Bài viết đã được ẩn');
+  }
+}
+
+function toggleFollow(id, name) {
+  const btn = document.getElementById('follow-btn-' + id);
+  if (btn.classList.contains('following')) {
+    btn.classList.remove('following');
+    btn.textContent = '+ Theo dõi';
+    showToast('Đã bỏ theo dõi ' + name);
+  } else {
+    btn.classList.add('following');
+    btn.textContent = '✓ Đang theo dõi';
+    showToast('Đang theo dõi ' + name);
+  }
+}
+
+function dismissSuggestion(id) {
+  document.getElementById('suggestion-' + id)?.remove();
+  showToast('Đã ẩn gợi ý');
+}
+
+function toggleDropdown(e, id) {
+  e.stopPropagation();
+  closeDropdowns();
+  document.getElementById('dropdown-' + id)?.classList.add('open');
+}
+
+function closeDropdowns() {
+  document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
+}
+
+document.addEventListener('click', closeDropdowns);
+
+// ── Nav ──
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  const labels = { home: 'Trang chủ', network: 'Mạng lưới', jobs: 'Việc làm', messaging: 'Tin nhắn', notifications: 'Thông báo', business: 'Dành cho doanh nghiệp', premium: 'Premium' };
+  showToast(labels[el.dataset.nav] || 'Navigation');
+}
+
+// ── Modals ──
+function openCreateModal(type) {
+  document.getElementById('createModal').classList.add('open');
+  document.getElementById('createTextarea').focus();
+  if (type) showToast('Tạo bài viết: ' + (type === 'video' ? 'Video' : type === 'photo' ? 'Ảnh' : type));
+}
+
+function closeCreateModal() {
+  document.getElementById('createModal').classList.remove('open');
+  document.getElementById('createTextarea').value = '';
+  togglePostBtn();
+}
+
+function togglePostBtn() {
+  const btn = document.getElementById('postBtn');
+  btn.disabled = !document.getElementById('createTextarea').value.trim();
+}
+
+function submitPost() {
+  const text = document.getElementById('createTextarea').value.trim();
+  if (!text) return;
+  POSTS.unshift({
+    id: Date.now(),
+    author: 'Nguyễn Minh Tuấn',
+    avatar: 'https://i.pravatar.cc/96?u=me',
+    title: 'Full-stack Developer · Ho Chi Minh City',
+    time: 'Vừa xong',
+    content: text,
+    image: null,
+    likes: 0, comments: 0, reposts: 0,
+    liked: false,
+    sampleComments: []
+  });
+  renderPosts();
+  closeCreateModal();
+  showToast('Bài viết đã được đăng!');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openShareModal(id) {
+  sharePostId = id;
+  const post = POSTS.find(p => p.id === id);
+  document.getElementById('sharePreview').textContent = post ? post.content.slice(0, 120) + '...' : '';
+  document.getElementById('shareTextarea').value = '';
+  document.getElementById('shareModal').classList.add('open');
+}
+
+function closeShareModal() {
+  document.getElementById('shareModal').classList.remove('open');
+  sharePostId = null;
+}
+
+function submitShare() {
+  if (sharePostId) {
+    const post = POSTS.find(p => p.id === sharePostId);
+    if (post) post.reposts++;
+    renderPosts();
+  }
+  closeShareModal();
+  showToast('Đã đăng lại bài viết!');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) {
+      overlay.classList.remove('open');
+    }
+  });
+});
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Init ──
+renderPosts();
+renderSuggestions();
+</script>
+</body>
+</html>
