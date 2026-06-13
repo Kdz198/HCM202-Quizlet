@@ -15,9 +15,11 @@ export default async function handler(req, res) {
 
   // If no KV credentials, return a mock or offline status
   if (!kvUrl || !kvToken) {
+    const envKeys = Object.keys(process.env).filter(k => k.includes("REDIS") || k.includes("KV"));
     return res.status(200).json({
       activeUsers: 1,
-      error: "Vercel KV or Upstash is not connected. Please connect Vercel KV or Upstash in your project storage settings."
+      error: "Vercel KV or Upstash is not connected. Please connect Vercel KV or Upstash in your project storage settings.",
+      detectedKeys: envKeys
     });
   }
 
